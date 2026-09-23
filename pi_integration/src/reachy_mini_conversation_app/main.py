@@ -227,7 +227,7 @@ def run(
 
         @effective_settings_app.middleware("http")
         async def _no_cache(request: Request, call_next: Callable[[Request], Awaitable[Response]]) -> Response:
-            """Uses the configured workflow."""
+            """Disable response caching."""
             response = await call_next(request)
             response.headers["Cache-Control"] = "no-store"
             return response

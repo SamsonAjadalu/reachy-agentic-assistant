@@ -306,7 +306,8 @@ class PersonalAssistantStatus(PersonalAssistantTool):
 class CreateReminder(PersonalAssistantTool):
     name = "create_reminder"
     description = (
-        "Create a reminder on the workstation using either a relative delay or an exact ISO-8601 time."
+        "Create a reminder on the workstation using either a relative delay "
+        "or an exact ISO-8601 time."
     )
     parameters_schema = {
         "type": "object",
@@ -622,7 +623,8 @@ class ReplyToEmail(PersonalAssistantTool):
     name = "reply_to_email"
     description = (
         "Create a reply draft for an existing Gmail message in its original thread. "
-        "The server derives the recipient and thread from message_id; email sending follows the approval flow."
+        "The server derives the recipient and thread from message_id; "
+        "email sending follows the approval flow."
     )
     parameters_schema = {
         "type": "object",

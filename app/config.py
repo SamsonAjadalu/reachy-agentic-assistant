@@ -18,7 +18,14 @@ from functools import lru_cache
 from pathlib import Path
 from typing import TYPE_CHECKING, Annotated, Any, Literal
 
-from pydantic import BeforeValidator, Field, SecretStr, field_validator, model_validator
+from pydantic import (
+    BeforeValidator,
+    Field,
+    SecretStr,
+    ValidationInfo,
+    field_validator,
+    model_validator,
+)
 from pydantic_settings import BaseSettings, NoDecode, SettingsConfigDict
 
 if TYPE_CHECKING:
@@ -269,6 +276,14 @@ class Settings(BaseSettings):
     visual_sidecar_enabled: bool = False
 
     # ------------------------------------------------------------ validators
+    @field_validator("weather_default_latitude", "weather_default_longitude", mode="before")
+    @classmethod
+    def _blank_weather_coordinate(cls, value: object, info: ValidationInfo) -> object:
+        # .env.example leaves these blank so a copied .env keeps the field defaults.
+        if isinstance(value, str) and not value.strip() and info.field_name is not None:
+            return cls.model_fields[info.field_name].default
+        return value
+
     @field_validator("app_data_dir", mode="after")
     @classmethod
     def _data_dir_outside_repo(cls, value: Path) -> Path:

@@ -31,7 +31,9 @@ def assert_no_superiority_language(text: str) -> str:
     blob = text.lower()
     for term in SUPERIORITY_TERMS:
         if term in blob:
-            raise AssertionError(f"Eval text reports measured results without superiority claims ({term!r}).")
+            raise AssertionError(
+                f"Eval text reports measured results without superiority claims ({term!r})."
+            )
     return text
 
 
