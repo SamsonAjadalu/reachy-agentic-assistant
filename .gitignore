@@ -1,0 +1,55 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+
+# Environments
+.venv/
+venv/
+.env
+.env.*
+!.env.example
+
+# Tooling caches
+.cache/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+
+# Runtime data must never enter the repository. Production paths live under
+# APP_DATA_DIR; these entries only guard against accidental local defaults.
+data/**
+!data/.gitkeep
+!data/README.md
+*.db
+*.db-wal
+*.db-shm
+*.sqlite
+*.sqlite3
+
+# Secrets and credentials
+*.pem
+*.key
+!tests/fixtures/**/*.key
+client_secret*.json
+credentials.json
+token.json
+*token_store*
+secrets/
+
+# Wardrobe and document artifacts
+wardrobe_images/
+document_index/
+
+# Editor / OS
+.idea/
+.vscode/
+.DS_Store
+*.swp
