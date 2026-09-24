@@ -1,0 +1,14 @@
+# Periodic liveness/readiness probe. Does not restart the API — use alerting on
+# failed timer runs, or pair with an external monitor.
+
+[Unit]
+Description=Reachy Personal Assistant periodic health check
+Documentation=file://@REPO_ROOT@/docs/operations.md
+
+[Timer]
+OnUnitActiveSec=5min
+Persistent=true
+Unit=reachy-personal-assistant-healthcheck.service
+
+[Install]
+WantedBy=timers.target

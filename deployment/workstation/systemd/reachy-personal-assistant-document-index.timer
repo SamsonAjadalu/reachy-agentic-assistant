@@ -1,0 +1,14 @@
+# Optional. Disabled by default — install-user.sh does not enable this timer.
+# See reachy-personal-assistant-document-index.service for when it is useful.
+
+[Unit]
+Description=Reachy Personal Assistant periodic document re-index
+Documentation=file://@REPO_ROOT@/docs/operations.md
+
+[Timer]
+OnCalendar=Sun *-*-* 04:00:00
+Persistent=true
+Unit=reachy-personal-assistant-document-index.service
+
+[Install]
+WantedBy=timers.target

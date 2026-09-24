@@ -42,6 +42,8 @@ class TestDataDirectory:
             settings.cache_dir,
             settings.task_output_dir,
             settings.document_index_path,
+            settings.visual_root,
+            settings.visual_evidence_path,
             Path(settings.scheduler_jobstore_url.removeprefix("sqlite:///")),
         ]
         for path in derived:
@@ -110,6 +112,7 @@ class TestProductionGuards:
                 pa_api_token="b" * 48,
                 telegram_enabled=True,
                 telegram_bot_token="123456789:AAreal-looking-token-value-here-xx",
+                telegram_allowed_chat_ids=[],
             )
 
     def test_allows_a_fully_configured_production_setup(self, tmp_path: Path) -> None:

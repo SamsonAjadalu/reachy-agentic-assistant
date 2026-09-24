@@ -1,0 +1,72 @@
+# Scripts the assistant is allowed to run on this workstation.
+#
+# This file is the allowlist. Nothing outside it can be executed, and it cannot
+# be edited through the API - adding a capability is a deliberate change here,
+# reviewed in git like any other code.
+#
+# Each entry declares an absolute executable and a typed parameter list. Values
+# supplied at call time are validated against those declarations and passed as
+# argv, so an argument is always one argument regardless of what it contains.
+#
+# Fields:
+#   name              Identifier used by the API. Lowercase, no spaces.
+#   description       Shown in the approval prompt. Write it for the person
+#                     deciding whether to tap Approve.
+#   executable        Absolute path. Bare names are refused because PATH is not
+#                     under the caller's control.
+#   working_directory Optional. The process starts here.
+#   risk_level        read | reversible_write | external_write
+#   requires_approval Whether the owner must confirm before it runs.
+#   timeout_seconds   Hard limit. The process group is killed after it.
+#   parameters        Typed inputs. Types: string, integer, number, boolean,
+#                     choice, path. Add `flag` to pass as --option value,
+#                     otherwise the value is positional.
+#
+# The entries below are commented out because they reference paths that will
+# not exist on a fresh checkout. Uncomment and correct the paths for scripts
+# that actually exist on your machine.
+
+scripts: []
+  # - name: backup-assistant-data
+  #   description: Snapshot the assistant's database and configuration.
+  #   executable: /usr/local/bin/backup-assistant
+  #   risk_level: reversible_write
+  #   requires_approval: true
+  #   timeout_seconds: 900
+  #   parameters:
+  #     - name: destination
+  #       type: path
+  #       required: false
+  #       flag: --destination
+  #       description: Where to write the archive.
+  #
+  # - name: disk-report
+  #   description: Print a per-directory disk usage summary.
+  #   executable: /usr/local/bin/disk-report
+  #   risk_level: read
+  #   requires_approval: false
+  #   timeout_seconds: 120
+  #   parameters:
+  #     - name: depth
+  #       type: integer
+  #       required: false
+  #       default: 2
+  #       minimum: 1
+  #       maximum: 5
+  #       flag: --depth
+  #
+  # - name: sync-datasets
+  #   description: Pull the latest training datasets from the lab share.
+  #   executable: /home/you/bin/sync-datasets.sh
+  #   working_directory: /home/you/data
+  #   risk_level: reversible_write
+  #   requires_approval: true
+  #   timeout_seconds: 3600
+  #   parameters:
+  #     - name: dataset
+  #       type: choice
+  #       required: true
+  #       choices: [grasping, tactile, locomotion]
+  #     - name: dry_run
+  #       type: boolean
+  #       flag: --dry-run

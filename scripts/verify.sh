@@ -74,7 +74,8 @@ run_step "Lint (ruff check)"           "$VENV/bin/ruff" check .
 
 if [[ $FAST -eq 0 ]]; then
     run_step "Type check (mypy)" "$VENV/bin/mypy" app approvals database documents integrations \
-        notifications reachy_client scheduler security shared wardrobe workers cli
+        notifications proactive reachy_client scheduler security shared vision wardrobe \
+        workers workstation cli
 fi
 
 run_step "Migrations (upgrade/downgrade round trip)" "$PY" scripts/check_migrations.py

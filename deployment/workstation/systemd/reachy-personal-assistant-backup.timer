@@ -1,0 +1,13 @@
+# Daily backup at 03:15 local time. Adjust OnCalendar to taste.
+
+[Unit]
+Description=Daily Reachy Personal Assistant database backup
+Documentation=file://@REPO_ROOT@/docs/operations.md
+
+[Timer]
+OnCalendar=*-*-* 03:15:00
+Persistent=true
+Unit=reachy-personal-assistant-backup.service
+
+[Install]
+WantedBy=timers.target

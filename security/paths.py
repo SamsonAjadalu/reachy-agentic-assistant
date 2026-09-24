@@ -80,9 +80,6 @@ def resolve_within_roots(
             raise SecurityViolationError("Path is not inside an approved directory.")
         candidate = matches[0]
 
-    if must_exist and not candidate.exists():
-        raise ValidationError("The requested file does not exist.")
-
     if not follow_symlinks:
         # Check every component: a symlinked parent directory is just as much an
         # escape as a symlinked leaf.
@@ -95,12 +92,18 @@ def resolve_within_roots(
             probe = probe.parent
 
     try:
-        real = candidate.resolve(strict=must_exist)
+        real = candidate.resolve(strict=False)
     except (OSError, RuntimeError) as exc:
         raise SecurityViolationError("Path could not be resolved.") from exc
 
+    # Containment is checked before existence deliberately. Answering "that file
+    # does not exist" for a path outside the roots would make this an existence
+    # oracle for the rest of the filesystem.
     if not any(is_within(real, root) or real == root for root in roots):
         raise SecurityViolationError("Path is not inside an approved directory.")
+
+    if must_exist and not real.exists():
+        raise ValidationError("The requested file does not exist.")
     return real
 
 

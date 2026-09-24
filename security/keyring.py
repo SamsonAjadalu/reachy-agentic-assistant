@@ -68,6 +68,10 @@ def _read_keyring() -> str:
 
 def resolve_secret_key(settings: Settings) -> str:
     """Return the Fernet key, or raise a ``ConfigurationError`` explaining how to set one."""
+    # Layout is checked before the file is read: a key sitting next to the
+    # ciphertext is misconfigured whether or not it happens to exist yet.
+    _assert_key_outside_store(settings)
+
     if settings.pa_secret_key_file is not None:
         key = _read_key_file(settings.pa_secret_key_file)
     elif settings.pa_secret_key.get_secret_value():
@@ -80,8 +84,6 @@ def resolve_secret_key(settings: Settings) -> str:
             "PA_SECRET_KEY_KEYRING. Generate one with: "
             "python scripts/generate_api_token.py --secret-key"
         )
-
-    _assert_key_outside_store(settings)
 
     try:
         Fernet(key.encode("ascii"))

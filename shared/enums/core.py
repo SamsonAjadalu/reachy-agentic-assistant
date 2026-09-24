@@ -119,14 +119,16 @@ class IntegrationName(StrEnum):
 
 
 class DocumentKind(StrEnum):
-    TXT = "txt"
+    TEXT = "text"
     MARKDOWN = "markdown"
+    CODE = "code"
     PDF = "pdf"
     DOCX = "docx"
     PPTX = "pptx"
     CSV = "csv"
     XLSX = "xlsx"
     JSON = "json"
+    OTHER = "other"
 
 
 class LaundryStatus(StrEnum):
@@ -134,7 +136,6 @@ class LaundryStatus(StrEnum):
     WORN = "worn"
     IN_LAUNDRY = "in_laundry"
     NEEDS_REPAIR = "needs_repair"
-
 
 
 class WatchStatus(StrEnum):

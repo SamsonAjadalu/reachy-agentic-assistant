@@ -1,0 +1,16 @@
+# Oneshot database backup. Triggered by reachy-personal-assistant-backup.timer.
+# Writes timestamped copies under ${APP_DATA_DIR}/backups (or BACKUP_ROOT).
+
+[Unit]
+Description=Reachy Personal Assistant database backup
+Documentation=file://@REPO_ROOT@/docs/operations.md
+
+[Service]
+Type=oneshot
+WorkingDirectory=@REPO_ROOT@
+EnvironmentFile=-@ENV_FILE@
+Environment=APP_DATA_DIR=@APP_DATA_DIR@
+Environment=PA_SECRET_KEY_FILE=${CREDENTIALS_DIRECTORY}/pa_secret_key
+LoadCredential=pa_secret_key:@SECRET_KEY_FILE@
+
+ExecStart=@PYTHON@ scripts/backup_database.py

@@ -21,6 +21,7 @@ from database.session import create_engine, dispose_engine, set_engine
 from security.redaction import register_secrets
 
 if TYPE_CHECKING:
+    from integrations.telegram.listener import TelegramListener
     from scheduler.service import SchedulerService
     from workers.runner import WorkerRunner
 
@@ -34,6 +35,7 @@ class AppState:
     settings: Settings
     scheduler: SchedulerService | None = None
     worker: WorkerRunner | None = None
+    telegram_listener: TelegramListener | None = None
     started_at: Any = None
     extras: dict[str, Any] = field(default_factory=dict)
 
@@ -48,8 +50,36 @@ def register_settings_secrets(settings: Settings) -> None:
             settings.google_client_secret.get_secret_value(),
             settings.notion_token.get_secret_value(),
             settings.weather_api_key.get_secret_value(),
+            settings.reachy_vision_token.get_secret_value(),
+            settings.reachy_camera_token.get_secret_value(),
+            settings.reachy_text_turn_token.get_secret_value(),
+            settings.vision_sidecar_token.get_secret_value(),
         ]
     )
+
+
+def register_action_executors() -> None:
+    """Import the modules that register approval executors.
+
+    A pending action written before a restart must find its handler after one,
+    so registration happens at startup rather than when a feature is first used.
+    """
+    from integrations.google.executors import register_google_executors
+    from integrations.notion.executors import register_notion_executors
+    from workstation.executors import register_workstation_executors
+
+    register_google_executors()
+    register_notion_executors()
+    register_workstation_executors()
+
+
+def register_task_handlers() -> None:
+    """Register background handlers before the worker can claim a queued row."""
+    from documents.tasks import register_document_tasks
+    from workstation.tasks import register_workstation_tasks
+
+    register_document_tasks()
+    register_workstation_tasks()
 
 
 @contextlib.asynccontextmanager
@@ -65,6 +95,8 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
 
     state = AppState(settings=settings, started_at=utcnow())
     app.state.app_state = state
+    register_action_executors()
+    register_task_handlers()
 
     logger.info(
         "Starting personal assistant API",
@@ -91,9 +123,20 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
         await worker.start()
         state.worker = worker
 
+    # Only the process that owns the scheduler polls Telegram: two pollers would
+    # fight over getUpdates offsets and drop callbacks.
+    if settings.telegram_enabled and not settings.mock_mode and state.scheduler is not None:
+        from integrations.telegram.listener import TelegramListener
+
+        listener = TelegramListener(settings)
+        await listener.start()
+        state.telegram_listener = listener
+
     try:
         yield
     finally:
+        if state.telegram_listener is not None:
+            await state.telegram_listener.stop()
         if state.worker is not None:
             await state.worker.stop()
         if state.scheduler is not None:

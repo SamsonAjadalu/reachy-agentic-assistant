@@ -178,6 +178,7 @@ class WorkerRunner:
             worker_id=slot_id,
             report_progress=report_progress,
             is_cancelled=is_cancelled,
+            settings=self._settings,
             correlation_id=correlation_id,
         )
 

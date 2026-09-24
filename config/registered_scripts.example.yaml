@@ -1,0 +1,25 @@
+# Example workstation script registry.
+#
+# Copy to config/registered_scripts.yaml (or point WORKSTATION_SCRIPT_REGISTRY
+# at this file) and uncomment entries whose executables exist on your machine.
+#
+# The live config/registered_scripts.yaml ships with scripts: [] — an empty
+# allowlist. Nothing runs until you deliberately add entries here and commit
+# the change. The API cannot edit this file; new capabilities require a git
+# change, same as any other code.
+#
+# See docs/operations.md and workstation/registry.py for validation rules.
+
+scripts: []
+  # - name: backup-assistant-data
+  #   description: Snapshot the assistant's database and configuration.
+  #   executable: /usr/local/bin/backup-assistant
+  #   risk_level: reversible_write
+  #   requires_approval: true
+  #   timeout_seconds: 900
+  #   parameters:
+  #     - name: destination
+  #       type: path
+  #       required: false
+  #       flag: --destination
+  #       description: Where to write the archive.

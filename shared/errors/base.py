@@ -71,6 +71,31 @@ class ExternalServiceError(AssistantError):
     http_status = 502
 
 
+class IntegrationError(ExternalServiceError):
+    """A provider rejected a call or is not usable in its current state.
+
+    Carries the provider name so the caller and the operator can tell which
+    integration needs attention without parsing the message.
+    """
+
+    code = "integration_error"
+
+    def __init__(
+        self,
+        message: str,
+        *,
+        integration: str | None = None,
+        code: str | None = None,
+        http_status: int | None = None,
+        details: dict[str, Any] | None = None,
+    ) -> None:
+        merged = dict(details or {})
+        if integration:
+            merged.setdefault("integration", integration)
+        super().__init__(message, code=code, http_status=http_status, details=merged)
+        self.integration = integration
+
+
 class ProviderTimeoutError(ExternalServiceError):
     code = "provider_timeout"
     http_status = 504

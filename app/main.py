@@ -5,7 +5,26 @@ from __future__ import annotations
 from fastapi import FastAPI
 from fastapi.openapi.utils import get_openapi
 
-from app.api.v1 import system
+from app.api.v1 import (
+    actions,
+    alerts,
+    approvals,
+    background_tasks,
+    briefings,
+    calendar,
+    contacts,
+    documents,
+    drive,
+    gmail,
+    notion,
+    reachy,
+    reminders,
+    system,
+    tasks,
+    wardrobe,
+    weather,
+    workstation,
+)
 from app.config import Settings, get_settings
 from app.error_handlers import register_error_handlers
 from app.lifespan import lifespan
@@ -79,6 +98,23 @@ def create_app(settings: Settings | None = None) -> FastAPI:
 
 def _register_routers(app: FastAPI) -> None:
     app.include_router(system.router)
+    app.include_router(reminders.router)
+    app.include_router(tasks.router)
+    app.include_router(background_tasks.router)
+    app.include_router(approvals.router)
+    app.include_router(actions.router)
+    app.include_router(gmail.router)
+    app.include_router(calendar.router)
+    app.include_router(contacts.router)
+    app.include_router(drive.router)
+    app.include_router(notion.router)
+    app.include_router(weather.router)
+    app.include_router(documents.router)
+    app.include_router(wardrobe.router)
+    app.include_router(workstation.router)
+    app.include_router(briefings.router)
+    app.include_router(alerts.router)
+    app.include_router(reachy.router)
 
 
 def _customise_openapi(app: FastAPI) -> None:

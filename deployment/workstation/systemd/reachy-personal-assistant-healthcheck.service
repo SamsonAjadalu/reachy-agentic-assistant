@@ -1,0 +1,14 @@
+# Oneshot health probe. Triggered by reachy-personal-assistant-healthcheck.timer.
+# Exits non-zero when /health or /ready fail, which surfaces in journalctl.
+
+[Unit]
+Description=Reachy Personal Assistant health check
+Documentation=file://@REPO_ROOT@/docs/operations.md
+
+[Service]
+Type=oneshot
+WorkingDirectory=@REPO_ROOT@
+EnvironmentFile=-@ENV_FILE@
+Environment=APP_DATA_DIR=@APP_DATA_DIR@
+
+ExecStart=@PYTHON@ scripts/healthcheck.py

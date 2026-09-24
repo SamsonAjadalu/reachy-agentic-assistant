@@ -7,7 +7,7 @@ transitions predictable rather than a source of silent off-by-one-hour bugs.
 
 from __future__ import annotations
 
-from datetime import UTC, datetime, timedelta
+from datetime import UTC, date, datetime, timedelta
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 from shared.errors import ValidationError
@@ -100,3 +100,13 @@ def start_of_local_day(moment: datetime, timezone_name: str) -> datetime:
 
 def end_of_local_day(moment: datetime, timezone_name: str) -> datetime:
     return start_of_local_day(moment, timezone_name) + timedelta(days=1)
+
+
+def local_today(timezone_name: str) -> date:
+    """The owner's current calendar date.
+
+    Anything a person would call "today" - what was worn today, what is due
+    today - has to be resolved in their timezone. Using the UTC date would file
+    an evening event under tomorrow for anyone west of Greenwich.
+    """
+    return to_local(utcnow(), timezone_name).date()

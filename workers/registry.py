@@ -11,6 +11,7 @@ from collections.abc import Awaitable, Callable
 from dataclasses import dataclass
 from typing import Any
 
+from app.config import Settings
 from shared.errors import ValidationError
 
 TaskHandler = Callable[["TaskContext"], Awaitable[dict[str, Any]]]
@@ -31,6 +32,9 @@ class TaskContext:
     worker_id: str
     report_progress: Callable[[int, str | None], Awaitable[None]]
     is_cancelled: Callable[[], Awaitable[bool]]
+    # The worker's own configuration, rather than a global lookup, so a handler
+    # reads the same settings as the process that queued it.
+    settings: Settings
     correlation_id: str | None = None
 
 

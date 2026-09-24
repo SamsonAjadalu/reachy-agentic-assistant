@@ -16,10 +16,13 @@ import os
 from enum import StrEnum
 from functools import lru_cache
 from pathlib import Path
-from typing import Annotated, Any, Literal
+from typing import TYPE_CHECKING, Annotated, Any, Literal
 
 from pydantic import BeforeValidator, Field, SecretStr, field_validator, model_validator
 from pydantic_settings import BaseSettings, NoDecode, SettingsConfigDict
+
+if TYPE_CHECKING:
+    from integrations.reachy.camera.settings import PiCameraSettings
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 
@@ -151,6 +154,12 @@ class Settings(BaseSettings):
     telegram_allowed_chat_ids: CsvIntList = Field(default_factory=list)
     telegram_approval_ttl_minutes: int = 60
 
+    # ----------------------------------------------------------- reachy chat
+    reachy_text_turn_enabled: bool = False
+    reachy_text_turn_url: str = "http://reachy-mini.local:7861/api/v1/text-turn"
+    reachy_text_turn_token: SecretStr = SecretStr("")
+    reachy_text_turn_timeout_seconds: int = 90
+
     # ---------------------------------------------------------------- google
     google_enabled: bool = False
     google_client_id: str = ""
@@ -172,12 +181,13 @@ class Settings(BaseSettings):
     weather_default_longitude: float = -79.3832
     weather_cache_ttl_seconds: int = 900
 
-
     # ------------------------------------------------------- local resources
     wardrobe_image_root: Path | None = None
     document_index_roots: CsvList = Field(default_factory=list)
     document_max_bytes: int = 50 * 1024 * 1024
     document_follow_symlinks: bool = False
+    document_index_interval_seconds: int = 3600
+    gmail_attachment_max_bytes: int = 15 * 1024 * 1024
     backup_root: Path | None = None
     backup_retention_days: int = 30
 
@@ -185,10 +195,78 @@ class Settings(BaseSettings):
         default_factory=lambda: REPO_ROOT / "config" / "registered_scripts.yaml"
     )
     workstation_allowed_services: CsvList = Field(default_factory=list)
+    workstation_service_scope: Literal["user", "system"] = "user"
+    workstation_max_output_bytes: int = 64 * 1024
+    workstation_max_concurrent_runs: int = 2
+    workstation_default_timeout_seconds: int = 300
 
     briefing_config_path: Path = Field(
         default_factory=lambda: REPO_ROOT / "config" / "briefing.yaml"
     )
+
+    # -------------------------------------------------------- visual memory
+    visual_enabled: bool = Field(
+        default=False,
+        description="Persist keyframes and evidence. Off by default; does not start inference.",
+    )
+    visual_min_capture_interval_seconds: float = Field(
+        default=10.0,
+        ge=10.0,
+        description=(
+            "Minimum seconds between persisted observations. Floor is 10 s; 1 Hz row "
+            "persistence is refused. Ephemeral sampling uses visual_sampling_hz instead."
+        ),
+    )
+    visual_sampling_hz: float = Field(
+        default=1.0,
+        gt=0.0,
+        le=2.0,
+        description="Ephemeral change-detection rate. Unchanged frames are not persisted.",
+    )
+    visual_ephemeral_retention_minutes: int = Field(default=60, ge=1)
+    visual_thumbnail_retention_days: int = Field(default=30, ge=1)
+    visual_evidence_retention_days: int = Field(default=90, ge=1)
+    visual_evidence_max_bytes: int = Field(
+        default=2 * 1024 * 1024 * 1024,
+        gt=0,
+        description="Hard byte budget for active evidence files under APP_DATA_DIR/visual.",
+    )
+    visual_keep_full_frames: bool = Field(
+        default=False,
+        description="When false, only thumbnails and cited crops are written.",
+    )
+    visual_daily_observation_cap: int = Field(default=2000, ge=1)
+    visual_scan_hourly_cap: int = Field(default=6, ge=1, le=30)
+    visual_watch_poll_seconds: int = Field(default=60, ge=15, le=3600)
+    visual_need_look_threshold: float = Field(default=0.55, ge=0.0, le=1.0)
+    visual_retention_unlink_threshold: int = Field(default=10, ge=1)
+    visual_default_queries: CsvList = Field(
+        default_factory=lambda: ["mug", "cup", "bottle", "phone", "keys", "book", "remote"]
+    )
+
+    reachy_camera_enabled: bool = False
+    reachy_camera_url: str = "http://reachy-mini.local:7861"
+    reachy_vision_token: SecretStr = SecretStr("")
+    reachy_camera_token: SecretStr = SecretStr("")
+    reachy_camera_timeout_seconds: float = Field(default=10.0, gt=0.0)
+    reachy_camera_connect_timeout_seconds: float = Field(default=5.0, gt=0.0)
+    reachy_camera_max_body_bytes: int = Field(default=5 * 1024 * 1024, ge=1024)
+    reachy_camera_stale_frame_ms: int = Field(default=1000, ge=0)
+    reachy_camera_frame_path: str = "/api/v1/camera/frame"
+    reachy_camera_frame_method: str = "POST"
+    reachy_camera_status_path: str = "/api/v1/camera/status"
+    reachy_camera_scan_path: str = "/api/v1/scan"
+    reachy_camera_scan_status_path: str = "/api/v1/scan/{scan_id}"
+    reachy_camera_scan_cancel_path: str = "/api/v1/scan/{scan_id}/cancel"
+    reachy_camera_get_attempts: int = Field(default=2, ge=1)
+
+    vision_sidecar_token: SecretStr = SecretStr("")
+    vision_sidecar_host: str = "127.0.0.1"
+    vision_sidecar_port: int = Field(default=8090, ge=1, le=65535)
+    vision_sidecar_timeout_seconds: float = Field(default=30.0, gt=0.0)
+    vision_allow_downloads: bool = False
+    yolo_world_enabled: bool = False
+    visual_sidecar_enabled: bool = False
 
     # ------------------------------------------------------------ validators
     @field_validator("app_data_dir", mode="after")
@@ -292,8 +370,69 @@ class Settings(BaseSettings):
         return self.app_data_dir / "task_outputs"
 
     @property
+    def script_log_dir(self) -> Path:
+        return self.app_data_dir / "script_runs"
+
+    @property
+    def wardrobe_image_path(self) -> Path:
+        return self.wardrobe_image_root or self.app_data_dir / "wardrobe"
+
+    @property
     def document_index_path(self) -> Path:
         return self.app_data_dir / "documents" / "index.db"
+
+    @property
+    def visual_root(self) -> Path:
+        return self.app_data_dir / "visual"
+
+    @property
+    def visual_evidence_path(self) -> Path:
+        return self.visual_root / "evidence"
+
+    @property
+    def visual_quarantine_path(self) -> Path:
+        return self.visual_root / "quarantine"
+
+    @property
+    def vision_sidecar_url(self) -> str:
+        return f"http://{self.vision_sidecar_host}:{self.vision_sidecar_port}"
+
+    @property
+    def vision_sidecar_enabled(self) -> bool:
+        return self.visual_sidecar_enabled
+
+    def reachy_camera_bearer_token(self) -> str:
+        return (
+            self.reachy_vision_token.get_secret_value()
+            or self.reachy_camera_token.get_secret_value()
+            or self.reachy_text_turn_token.get_secret_value()
+        )
+
+    def pi_camera_settings(self) -> PiCameraSettings:
+        from integrations.reachy.camera.settings import PiCameraSettings
+
+        token = self.reachy_camera_bearer_token()
+        method = self.reachy_camera_frame_method.upper()
+        if method not in {"GET", "POST"}:
+            method = "POST"
+        return PiCameraSettings(
+            enabled=self.reachy_camera_enabled and not self.mock_mode,
+            base_url=self.reachy_camera_url.rstrip("/"),
+            token=token,
+            timeout_seconds=self.reachy_camera_timeout_seconds,
+            connect_timeout_seconds=min(
+                self.reachy_camera_connect_timeout_seconds, self.reachy_camera_timeout_seconds
+            ),
+            max_body_bytes=self.reachy_camera_max_body_bytes,
+            stale_frame_ms=self.reachy_camera_stale_frame_ms,
+            frame_path=self.reachy_camera_frame_path,
+            frame_method=method,
+            status_path=self.reachy_camera_status_path,
+            scan_path=self.reachy_camera_scan_path,
+            scan_status_path=self.reachy_camera_scan_status_path,
+            scan_cancel_path=self.reachy_camera_scan_cancel_path,
+            get_attempts=self.reachy_camera_get_attempts,
+        )
 
     @property
     def scheduler_jobstore_url(self) -> str:
@@ -331,11 +470,15 @@ class Settings(BaseSettings):
             self.cache_dir,
             self.task_output_dir,
             self.app_data_dir / "documents",
+            self.app_data_dir / "gmail" / "attachments",
             self.wardrobe_image_root or self.app_data_dir / "wardrobe",
             (self.wardrobe_image_root or self.app_data_dir / "wardrobe") / "items",
             (self.wardrobe_image_root or self.app_data_dir / "wardrobe") / "thumbnails",
             (self.wardrobe_image_root or self.app_data_dir / "wardrobe") / "outfits",
             self.backup_root or self.app_data_dir / "backups",
+            self.visual_root,
+            self.visual_evidence_path,
+            self.visual_quarantine_path,
         ]
 
     def ensure_directories(self) -> None:
@@ -345,6 +488,12 @@ class Settings(BaseSettings):
         # The secrets directory holds the encrypted token store; keep it 0700
         # even if the umask is permissive.
         self.secrets_dir.chmod(0o700)
+        if self.visual_root.exists():
+            self.visual_root.chmod(0o700)
+        if self.visual_evidence_path.exists():
+            self.visual_evidence_path.chmod(0o700)
+        if self.visual_quarantine_path.exists():
+            self.visual_quarantine_path.chmod(0o700)
 
     def redacted_diagnostics(self) -> dict[str, Any]:
         """Configuration snapshot safe to log, print or return over the API."""

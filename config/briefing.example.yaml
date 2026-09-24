@@ -1,0 +1,36 @@
+# Briefing preferences reference.
+#
+# Live preferences are stored in the database (briefing_preferences table) and
+# managed via GET/PATCH /api/v1/briefings/preferences. This file documents the
+# shape used by scripts/seed_demo_data.py when BRIEFING_CONFIG_PATH points here.
+#
+# Copy to config/briefing.yaml to customise seed defaults:
+#   cp config/briefing.example.yaml config/briefing.yaml
+
+enabled: true
+send_hour: 7
+send_minute: 30
+timezone: America/Toronto
+
+# Section names must match proactive.sections.available_sections().
+sections:
+  - calendar
+  - tasks
+  - reminders
+  - weather
+  - outfit
+
+# Delivery channels (NotificationChannel values).
+channels:
+  - telegram
+
+# Local hour (0-23). Delivery is suppressed during this window; the briefing is
+# still assembled and recorded.
+quiet_hours_start: 22
+quiet_hours_end: 7
+
+formatter: template  # template | spoken
+
+notes: >
+  Quiet hours wrap midnight (22:00–07:00). In mock mode the calendar section
+  uses the Google mock provider.

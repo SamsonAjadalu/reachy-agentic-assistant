@@ -1,0 +1,24 @@
+# Optional manual document re-index trigger.
+#
+# Incremental indexing already runs on DOCUMENT_INDEX_INTERVAL_SECONDS inside the
+# scheduler-owning API process (scheduler.jobs:refresh_document_index). Enable this
+# timer only when you want a periodic forced queue via the HTTP API — for example
+# when DOCUMENT_INDEX_ROOTS change often and you want a belt-and-suspenders nudge.
+#
+# Requires the API to be running and PA_API_TOKEN to be set in the environment file.
+
+[Unit]
+Description=Reachy Personal Assistant document re-index trigger
+Documentation=file://@REPO_ROOT@/docs/operations.md
+After=reachy-personal-assistant-api.service
+
+[Service]
+Type=oneshot
+WorkingDirectory=@REPO_ROOT@
+Environment=APP_HOST=127.0.0.1
+Environment=APP_PORT=8080
+EnvironmentFile=-@ENV_FILE@
+
+ExecStart=/usr/bin/curl -sfS -X POST \
+    -H "Authorization: Bearer ${PA_API_TOKEN}" \
+    "http://${APP_HOST}:${APP_PORT}/api/v1/documents/reindex"

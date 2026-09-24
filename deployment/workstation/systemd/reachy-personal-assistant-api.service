@@ -1,0 +1,65 @@
+# User unit (default install via deployment/workstation/install-user.sh).
+#
+# Copy to:  ~/.config/systemd/user/reachy-personal-assistant-api.service
+# Enable:   systemctl --user enable --now reachy-personal-assistant-api.service
+#
+# System unit differences (see deployment/workstation/install-system.sh):
+#   - Install under /etc/systemd/system/ instead of ~/.config/systemd/user/
+#   - Set User= and Group= to a dedicated account (e.g. reachy)
+#   - Point WorkingDirectory and EnvironmentFile at system paths
+#   - LoadCredential source is typically /etc/reachy-personal-assistant/pa_secret_key
+#   - Enable with: sudo systemctl enable --now reachy-personal-assistant-api.service
+#   - No loginctl linger required; the service survives logout
+#
+# Process layout (single host):
+#   This unit runs the FastAPI app with SCHEDULER_ENABLED=true and WORKER_ENABLED=true
+#   by default. The scheduler holds an exclusive lock at ${APP_DATA_DIR}/scheduler.lock;
+#   only one process may own it. When this process owns the scheduler and TELEGRAM_ENABLED
+#   is set, the Telegram long-poll listener starts in-process (see lifespan.py).
+#   There is no separate telegram unit — two pollers would fight over getUpdates offsets.
+#
+# Optional split: disable WORKER_ENABLED here and enable reachy-personal-assistant-worker.service
+# instead. Never run two scheduler-owning API instances.
+
+[Unit]
+Description=Reachy Personal Assistant API
+Documentation=file://@REPO_ROOT@/docs/operations.md
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=@REPO_ROOT@
+
+# Defaults first; EnvironmentFile below may override APP_HOST / APP_PORT.
+# systemd expands ${VAR} but not bash ${VAR:-default}.
+Environment=APP_HOST=127.0.0.1
+Environment=APP_PORT=8080
+
+# Optional: point at your checkout's .env. Minus prefix = do not fail if missing.
+EnvironmentFile=-@ENV_FILE@
+
+# Runtime data never lives in the git checkout.
+Environment=APP_DATA_DIR=@APP_DATA_DIR@
+
+# Fernet key via systemd credentials (tmpfs, owner-only). Generate with:
+#   python scripts/generate_api_token.py --secret-key --key-file ~/.config/reachy-personal-assistant/pa_secret_key
+# and set LoadCredential below to that path. PA_SECRET_KEY must stay unset.
+Environment=PA_SECRET_KEY_FILE=${CREDENTIALS_DIRECTORY}/pa_secret_key
+LoadCredential=pa_secret_key:@SECRET_KEY_FILE@
+
+# Scheduler + worker + (when configured) Telegram listener all run in this process.
+Environment=SCHEDULER_ENABLED=true
+Environment=WORKER_ENABLED=true
+
+ExecStart=@PYTHON@ -m uvicorn app.main:app --host ${APP_HOST} --port ${APP_PORT}
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=30
+
+# Hardening (user units cannot use all system-unit directives).
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=default.target

@@ -33,6 +33,23 @@ Trigger = DateTrigger | CronTrigger | IntervalTrigger
 
 DEFAULT_MISFIRE_GRACE_SECONDS = 300
 
+_current: SchedulerService | None = None
+
+
+def set_current_scheduler(service: SchedulerService | None) -> None:
+    global _current
+    _current = service
+
+
+def get_current_scheduler() -> SchedulerService | None:
+    """The scheduler owned by this process, if any.
+
+    Returns ``None`` when another process holds the lock. Callers must treat
+    scheduling as best-effort here and rely on ``reconcile`` in the owning
+    process to pick up rows written elsewhere.
+    """
+    return _current if _current is not None and _current.running else None
+
 
 class SchedulerService:
     """Owns the process-wide scheduler, guarded by an exclusive lock."""
@@ -81,13 +98,96 @@ class SchedulerService:
             "Scheduler started",
             extra={"restored_jobs": restored, "jobstore": self._settings.scheduler_jobstore_url},
         )
+        set_current_scheduler(self)
+        await self._install_periodic_jobs()
         return True
 
     async def stop(self) -> None:
+        set_current_scheduler(None)
         if self._scheduler is not None:
             self._scheduler.shutdown(wait=False)
             self._scheduler = None
         self._lock.release()
+
+    async def _install_periodic_jobs(self) -> None:
+        """Register the jobs that always exist, replacing any restored copy.
+
+        Reconciliation runs on an interval rather than only at startup so a row
+        written by a process that does not own the scheduler still gets picked up.
+        """
+        from scheduler import jobs
+
+        self.add_interval_job(
+            jobs.RECONCILE_JOB,
+            job_id="system:reconcile",
+            seconds=60,
+            start_immediately=True,
+        )
+        self.add_interval_job(
+            jobs.MAINTENANCE_JOB,
+            job_id="system:maintenance",
+            seconds=3600,
+        )
+        if self._settings.document_index_roots:
+            self.add_interval_job(
+                jobs.DOCUMENT_INDEX_JOB,
+                job_id="system:document-index",
+                seconds=self._settings.document_index_interval_seconds,
+            )
+        # Alert sweep is always on: disk, overdue tasks and rain before commute
+        # are useful even when no external integrations are configured.
+        self.add_interval_job(
+            jobs.ALERT_SWEEP_JOB,
+            job_id="system:alert-sweep",
+            seconds=300,
+        )
+        self.add_interval_job(
+            jobs.VISUAL_WATCH_JOB,
+            job_id="system:visual-watches",
+            seconds=self._settings.visual_watch_poll_seconds,
+            start_immediately=True,
+        )
+        self.add_cron_job(
+            jobs.VISUAL_ORPHAN_JOB,
+            job_id="system:visual-orphan-sweep",
+            timezone="UTC",
+            hour=7,
+            minute=15,
+            day_of_week="sun",
+            misfire_grace_seconds=3600,
+        )
+        await self._install_briefing_job()
+
+    async def _install_briefing_job(self) -> None:
+        """Schedule the daily briefing at the owner's preferred local wall time."""
+        from scheduler import jobs
+
+        # Preferences live in the DB; fall back to 07:00 in APP_TIMEZONE when
+        # the table is empty (fresh install, or the owner has never configured).
+        hour, minute, timezone = 7, 0, self._settings.app_timezone
+        try:
+            from database.session import session_scope
+            from proactive.briefing import load_preferences
+
+            async with session_scope() as session:
+                preferences = await load_preferences(session, self._settings)
+            hour = preferences.send_hour
+            minute = preferences.send_minute
+            timezone = preferences.timezone
+            if not preferences.enabled:
+                self.remove_job("system:daily-briefing")
+                return
+        except Exception:
+            logger.warning("Could not load briefing preferences; using defaults")
+
+        self.add_cron_job(
+            jobs.BRIEFING_JOB,
+            job_id="system:daily-briefing",
+            timezone=timezone,
+            hour=hour,
+            minute=minute,
+            misfire_grace_seconds=3600,
+        )
 
     # ------------------------------------------------------------------ jobs
     def add_date_job(

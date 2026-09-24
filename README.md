@@ -2,5 +2,6 @@
 
 Reachy Agentic Assistant is a workstation service that extends Reachy Mini with Gmail, Calendar, Telegram, Notion, scheduling, memory, and visual-perception tools.
 
-This initial release provides the FastAPI service skeleton: configuration,
-authenticated API surface, SQLite/Alembic persistence, and offline verification.
+This release adds Gmail, Calendar, Telegram, Notion, Reachy client tools,
+scheduling, memory, approvals, documents, wardrobe, and workstation operations.
+Integrations default to mock mode for offline development.

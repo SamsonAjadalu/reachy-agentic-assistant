@@ -27,6 +27,10 @@ from fastapi import FastAPI  # noqa: E402
 from httpx import ASGITransport, AsyncClient  # noqa: E402
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession  # noqa: E402
 
+# Imported for its side effect: Base.metadata is only complete once every model
+# module has been executed, and create_all silently produces an empty schema
+# otherwise.
+import database.models  # noqa: E402, F401
 from app.config import AppEnv, Settings  # noqa: E402
 from app.logging_config import configure_logging  # noqa: E402
 from database.session import (  # noqa: E402
@@ -76,6 +80,7 @@ def settings(data_dir: Path, secret_key_file: Path) -> Settings:
         pa_secret_key_file=secret_key_file,
         pa_rate_limit_per_minute=0,
         mock_mode=True,
+        visual_enabled=True,
         scheduler_enabled=False,
         worker_enabled=False,
         telegram_enabled=False,

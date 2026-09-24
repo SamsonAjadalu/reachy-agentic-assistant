@@ -1,0 +1,25 @@
+"""Example Pi-side wrapper for one proposed adapter.
+
+Copy and adapt after inspecting the Reachy conversation app's tool registration
+API. This file is a template only — it is not imported anywhere.
+"""
+
+from __future__ import annotations
+
+import os
+
+from reachy_client import PersonalAssistantClient
+from reachy_tools.proposed.adapters import get_weather
+
+
+def _client() -> PersonalAssistantClient:
+    base_url = os.environ["PA_API_URL"]
+    token = os.environ["PA_API_TOKEN"]
+    return PersonalAssistantClient(base_url, token)
+
+
+def reachy_get_weather(location: str | None = None) -> str:
+    """Voice tool entry point — replace with the real decorator your app expects."""
+    with _client() as client:
+        result = get_weather(client, location=location)
+    return result["spoken"]

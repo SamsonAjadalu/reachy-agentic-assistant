@@ -17,7 +17,7 @@ from sqlalchemy import (
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from database.base import Base, TimestampMixin, UtcDateTime, UUIDPrimaryKeyMixin
-from shared.enums import ScriptRunStatus, WatchStatus
+from shared.enums import ScriptRunStatus
 
 
 class DocumentSource(UUIDPrimaryKeyMixin, TimestampMixin, Base):
@@ -74,7 +74,6 @@ class DocumentRecord(UUIDPrimaryKeyMixin, TimestampMixin, Base):
     excerpt: Mapped[str | None] = mapped_column(Text)
 
     source: Mapped[DocumentSource] = relationship(back_populates="documents")
-
 
 
 class RegisteredScript(UUIDPrimaryKeyMixin, TimestampMixin, Base):

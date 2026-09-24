@@ -6,14 +6,35 @@ __pycache__/
 build/
 dist/
 
-# Environments
+# Virtual environments
 .venv/
+.venv-vision/
 venv/
+
+# Secrets / local config — never commit
 .env
 .env.*
 !.env.example
+.env.local
+.env.live
+*.local.yaml
+*.local.yml
 
-# Tooling caches
+# Local databases
+*.db
+*.db-wal
+*.db-shm
+*.sqlite
+*.sqlite3
+
+# Logs and run artifacts
+*.log
+*.pid
+logs/
+mock-api.log
+mock-api.pid
+
+# Tooling / generated reports
 .cache/
 .pytest_cache/
 .mypy_cache/
@@ -23,30 +44,46 @@ venv/
 htmlcov/
 coverage.xml
 
-# Runtime data must never enter the repository. Production paths live under
-# APP_DATA_DIR; these entries only guard against accidental local defaults.
+# Runtime data (must live outside the checkout via APP_DATA_DIR;
+# these patterns only guard accidental local copies)
 data/**
 !data/.gitkeep
 !data/README.md
-*.db
-*.db-wal
-*.db-shm
-*.sqlite
-*.sqlite3
-
-# Secrets and credentials
-*.pem
-*.key
-!tests/fixtures/**/*.key
+**/visual/evidence/
+**/evidence/thumbnail/
+**/evidence/full/
+wardrobe_images/
+document_index/
+secrets/
+*token_store*.enc
+*_tokens.enc
 client_secret*.json
 credentials.json
 token.json
-*token_store*
-secrets/
+*.pem
+*.key
+!tests/fixtures/**/*.key
 
-# Wardrobe and document artifacts
-wardrobe_images/
-document_index/
+# Images / evidence dumps
+*.jpg
+*.jpeg
+*.png
+*.webp
+!docs/**/*.png
+!docs/**/*.jpg
+!tests/fixtures/**
+
+# Model caches / weights
+*.safetensors
+*.onnx
+*.ckpt
+*.pt
+*.pth
+*.bin
+!tests/fixtures/**
+vision_sidecar/weights/
+.hf_home/
+HF_HOME/
 
 # Editor / OS
 .idea/
