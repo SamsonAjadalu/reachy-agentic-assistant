@@ -163,7 +163,7 @@ class SchedulerService:
         from scheduler import jobs
 
         # Preferences live in the DB; fall back to 07:00 in APP_TIMEZONE when
-        # the table is empty (fresh install, or the owner has never configured).
+        # Uses the configured workflow.
         hour, minute, timezone = 7, 0, self._settings.app_timezone
         try:
             from database.session import session_scope

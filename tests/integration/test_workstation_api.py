@@ -93,7 +93,7 @@ async def wait_for(session: AsyncSession, run_id: str, *, seconds: float = 20) -
         if run is not None and run.status in terminal:
             return run
         await asyncio.sleep(0.1)
-    pytest.fail(f"Run {run_id} never finished.")
+    pytest.fail(f"Run {run_id} remains active.")
 
 
 class TestStatus:

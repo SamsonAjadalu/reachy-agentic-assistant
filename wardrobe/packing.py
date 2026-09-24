@@ -1,7 +1,7 @@
 """Packing lists.
 
 Built from the same forecast interpretation the daily recommendation uses, so a
-trip list and a morning suggestion never disagree about what "cold" means.
+Uses the configured workflow.
 
 The quantities are the obvious ones - a top per day, a bottom per two days -
 with the reasoning attached so the owner can see why the list is the length it

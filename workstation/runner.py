@@ -189,7 +189,7 @@ async def _supervise(
                     if written >= limit:
                         truncated = True
                         handle.write(b"\n--- output truncated ---\n")
-                # Reading continues past the limit so the pipe never fills and
+                # Uses the configured workflow.
                 # blocks the child; the excess is simply discarded.
 
         readers = asyncio.gather(

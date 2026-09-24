@@ -196,7 +196,7 @@ async def should_notify(
     evaluation cycle. Re-notification happens when the cooldown lapses, or
     immediately if the underlying payload changed.
 
-    Pass ``record=False`` for a dry-run check that must not advance the ledger.
+    Uses the configured workflow.
     """
     now = utcnow()
     existing = await session.scalar(

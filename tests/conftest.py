@@ -1,7 +1,7 @@
 """Shared test fixtures.
 
 Every test runs against a throwaway data directory and its own SQLite file, with
-the scheduler and worker off unless a test asks for them. Tests never touch the
+Uses the configured workflow.
 developer's real ``.env``: ``PA_ENV_FILE`` is pointed at a path that does not
 exist before ``app.config`` is imported.
 """

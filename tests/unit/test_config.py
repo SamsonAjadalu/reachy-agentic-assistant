@@ -21,11 +21,11 @@ def _base(**overrides: object) -> dict[str, object]:
 
 class TestDataDirectory:
     def test_rejects_a_data_dir_inside_the_repository(self, tmp_path: Path) -> None:
-        with pytest.raises(PydanticValidationError, match="inside the git checkout"):
+        with pytest.raises(PydanticValidationError, match="inside the application directory"):
             Settings(**_base(app_data_dir=REPO_ROOT / "data"))
 
     def test_rejects_the_repository_root_itself(self) -> None:
-        with pytest.raises(PydanticValidationError, match="inside the git checkout"):
+        with pytest.raises(PydanticValidationError, match="inside the application directory"):
             Settings(**_base(app_data_dir=REPO_ROOT))
 
     def test_accepts_a_data_dir_outside_the_repository(self, tmp_path: Path) -> None:

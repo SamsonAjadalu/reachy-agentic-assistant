@@ -222,7 +222,7 @@ def suggest_event_slots(
     max_suggestions: int = 3,
     step: timedelta | None = None,
 ) -> list[tuple[datetime, datetime, list[str]]]:
-    """Find free windows. Pure: never writes to Google."""
+    """Uses the configured workflow."""
     start = ensure_utc(search_from)
     end = ensure_utc(search_to)
     if end <= start:
@@ -274,7 +274,7 @@ def _validate_range(start: datetime, end: datetime) -> tuple[datetime, datetime]
     if end_utc <= start_utc:
         raise ValidationError("The end of the range must be after its start.")
     if end_utc - start_utc > timedelta(days=MAX_RANGE_DAYS):
-        raise ValidationError(f"The range must not exceed {MAX_RANGE_DAYS} days.")
+        raise ValidationError(f"The range supports up to {MAX_RANGE_DAYS} days.")
     return start_utc, end_utc
 
 

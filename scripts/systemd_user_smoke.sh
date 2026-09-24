@@ -20,7 +20,7 @@ PY="${REPO_ROOT}/.venv/bin/python"
 
 cleanup() {
   systemctl --user stop reachy-personal-assistant-api.service 2>/dev/null || true
-  "${REPO_ROOT}/deployment/main_pc/uninstall-user.sh" >/dev/null 2>&1 || true
+  "${REPO_ROOT}/deployment/workstation/uninstall-user.sh" >/dev/null 2>&1 || true
   rm -rf "${SMOKE_ROOT}"
 }
 trap cleanup EXIT
@@ -62,7 +62,7 @@ export TELEGRAM_ENABLED=false
 
 echo "Installing user units (non-interactive)..."
 ENV_FILE="${ENV_FILE}" APP_DATA_DIR="${DATA_DIR}" SECRET_KEY_FILE="${SECRET_KEY_FILE}" \
-  "${REPO_ROOT}/deployment/main_pc/install-user.sh" --yes --no-linger --start
+  "${REPO_ROOT}/deployment/workstation/install-user.sh" --yes --no-linger --start
 
 UNIT="${HOME}/.config/systemd/user/reachy-personal-assistant-api.service"
 if command -v systemd-analyze >/dev/null 2>&1; then
@@ -110,6 +110,6 @@ curl -sfS "http://127.0.0.1:${PORT}/ready" | "${PY}" -m json.tool
 
 echo "Stopping and uninstalling..."
 systemctl --user stop reachy-personal-assistant-api.service || true
-"${REPO_ROOT}/deployment/main_pc/uninstall-user.sh"
+"${REPO_ROOT}/deployment/workstation/uninstall-user.sh"
 
 echo "systemd user smoke passed."

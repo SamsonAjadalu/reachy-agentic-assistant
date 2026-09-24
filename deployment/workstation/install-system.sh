@@ -109,7 +109,7 @@ sudo journalctl -u reachy-personal-assistant-api.service -f
 
 Notes
 -----
-- System units do not need loginctl enable-linger.
+- System units use the system service manager directly.
 - Telegram long-polling runs inside the scheduler-owning API process; there is
   no separate telegram unit.
 - Only one process may hold ${APP_DATA_DIR}/scheduler.lock.

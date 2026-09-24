@@ -164,7 +164,7 @@ async def create_outfit(session: AsyncSession, payload: OutfitCreate) -> Outfit:
 
     found = list(await session.scalars(select(WardrobeItem).where(WardrobeItem.id.in_(item_ids))))
     if len(found) != len(item_ids):
-        raise ValidationError("One or more of those garments do not exist.")
+        raise ValidationError("Some garment references are unknown.")
 
     outfit = Outfit(
         name=payload.name.strip(),

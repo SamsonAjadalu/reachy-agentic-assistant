@@ -36,7 +36,7 @@ from reachy_mini_conversation_app.tools.core_tools import ToolDependencies
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
 TOOLS_ROOT = REPOSITORY_ROOT / "reachy_tools"
-TOKEN = "fake-pi-token-that-must-never-appear-in-logs"
+TOKEN = "fake-pi-token-for-tests"
 NOW = "2026-08-07T20:00:00Z"
 LOCAL_NOW = "2026-08-07T16:00:00-04:00"
 
@@ -394,7 +394,7 @@ class MockPersonalAssistantHandler(BaseHTTPRequestHandler):
         if path == "/api/v1/workstation/status" and method == "GET":
             return 200, {
                 "status": {
-                    "hostname": "main-pc",
+                    "hostname": "workstation",
                     "checked_at": NOW,
                     "uptime_seconds": 1000,
                     "cpu_percent": 10.0,

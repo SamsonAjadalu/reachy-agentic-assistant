@@ -42,7 +42,7 @@ REQUEST_TIMEOUT = httpx.Timeout(30.0, connect=10.0)
 
 
 class GoogleClient:
-    """Thin authenticated wrapper over the Google REST endpoints."""
+    """Authenticated wrapper over the Google REST endpoints."""
 
     def __init__(
         self,

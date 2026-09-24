@@ -139,7 +139,7 @@ class IdempotencyKey(UUIDPrimaryKeyMixin, TimestampMixin, Base):
 class ActionAuditLog(UUIDPrimaryKeyMixin, Base):
     """Append-only record of every consequential operation.
 
-    Deliberately has no ``updated_at``: rows are written once and never edited.
+    Uses the configured workflow.
     """
 
     __tablename__ = "action_audit_log"

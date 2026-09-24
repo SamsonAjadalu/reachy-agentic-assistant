@@ -11,7 +11,7 @@ dist/
 .venv-vision/
 venv/
 
-# Secrets / local config — never commit
+# Secrets / local config
 .env
 .env.*
 !.env.example
@@ -44,7 +44,7 @@ mock-api.pid
 htmlcov/
 coverage.xml
 
-# Runtime data (must live outside the checkout via APP_DATA_DIR;
+# Runtime data stored under APP_DATA_DIR.
 # these patterns only guard accidental local copies)
 data/**
 !data/.gitkeep

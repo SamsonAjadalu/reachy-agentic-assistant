@@ -2,12 +2,12 @@
 
 Talks to the HTTP API directly with httpx rather than through a framework: the
 assistant only needs sendMessage, editMessageText, answerCallbackQuery,
-sendPhoto and getUpdates, and a thin client keeps the retry and redaction
+sendPhoto and getUpdates, and a small client keeps the retry and redaction
 behaviour under our control.
 
 Two rules shape this module:
 
-* The bot token never appears in a log line, an exception or an error envelope.
+Uses the configured workflow.
   Telegram puts the token in the URL path, so every outgoing URL is redacted
   before it can reach a logger.
 * Outbound text is escaped for MarkdownV2. Message bodies frequently contain
@@ -61,7 +61,7 @@ def truncate(text: str, limit: int = MAX_MESSAGE_CHARS) -> str:
 
 
 class TelegramError(RuntimeError):
-    """A Telegram API call failed. Never carries the bot token."""
+    """Uses the configured workflow."""
 
 
 class TelegramChannel:
@@ -206,7 +206,7 @@ class TelegramChannel:
 
         The callback data carries only an opaque token. Telegram caps callback
         data at 64 bytes and echoes it back to anyone who can reach the bot, so
-        it must never contain a database id or any part of the payload.
+        Uses the configured workflow.
         """
         chat_id = self.primary_chat_id
         if chat_id is None:

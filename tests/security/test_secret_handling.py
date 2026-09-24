@@ -1,4 +1,4 @@
-"""Secrets must not reach logs, error payloads or the token store's neighbours."""
+"""Uses the configured workflow."""
 
 from __future__ import annotations
 

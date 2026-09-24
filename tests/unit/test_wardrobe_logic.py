@@ -163,7 +163,7 @@ class TestImageStorage:
         assert (tmp_path / stored.thumbnail_path).is_file()
 
     def test_the_stored_name_is_a_content_hash(self, tmp_path):
-        """The uploaded filename is attacker-influenced and is never used."""
+        """Uses the configured workflow."""
         stored = store_image(make_image((60, 60, 60)), tmp_path, item_id="i")
         assert stored.content_hash[:16] in stored.relative_path
 
@@ -416,4 +416,4 @@ class TestLaundryAndRotation:
 
     def test_a_never_worn_garment_is_surfaced(self) -> None:
         gaps = rotation_gaps([item("New shirt", "top")], today=TODAY)
-        assert gaps[0]["reason"] == "never worn"
+        assert gaps[0]["reason"] == "unworn"

@@ -67,7 +67,7 @@ class TestParsing:
         assert item.seasons == ["autumn", "winter"]
 
     def test_out_of_range_values_are_clamped_not_rejected(self) -> None:
-        """A typo in one cell should not fail an import of two hundred rows."""
+        """Uses the configured workflow."""
         item = parse_row(
             {
                 "name": "Coat",

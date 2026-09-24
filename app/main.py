@@ -21,6 +21,7 @@ from app.api.v1 import (
     reminders,
     system,
     tasks,
+    vision,
     wardrobe,
     weather,
     workstation,
@@ -41,7 +42,9 @@ from app.middleware.network import NetworkAllowlistMiddleware
 PUBLIC_PATHS = frozenset({"/health", "/ready"})
 
 DESCRIPTION = """
-Reachy Agentic Assistant is a workstation service that extends Reachy Mini with Gmail, Calendar, Telegram, Notion, scheduling, memory, and visual-perception tools.
+Reachy Agentic Assistant is a workstation service that extends Reachy Mini with
+Gmail, Calendar, Telegram, Notion, scheduling, memory, and visual-perception
+tools.
 
 Every endpoint requires a bearer token except `/health` and `/ready`. Fast read
 operations answer synchronously within a bounded timeout; only genuinely
@@ -115,6 +118,7 @@ def _register_routers(app: FastAPI) -> None:
     app.include_router(briefings.router)
     app.include_router(alerts.router)
     app.include_router(reachy.router)
+    app.include_router(vision.router)
 
 
 def _customise_openapi(app: FastAPI) -> None:

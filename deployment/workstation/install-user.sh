@@ -38,7 +38,7 @@ if [[ "${PA_INSTALL_NONINTERACTIVE:-0}" == "1" ]]; then
   NONINTERACTIVE=1
 fi
 
-# Prefer an absolute interpreter so user units do not depend on the manager PATH.
+# Uses the configured workflow.
 if [[ -x "${REPO_ROOT}/.venv/bin/python" ]]; then
   PYTHON="${REPO_ROOT}/.venv/bin/python"
 elif [[ -n "${VIRTUAL_ENV:-}" && -x "${VIRTUAL_ENV}/bin/python" ]]; then

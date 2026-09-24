@@ -115,7 +115,7 @@ class TestImages:
         assert response.status_code == 422
 
     async def test_a_declared_content_type_is_not_trusted(self, client: AsyncClient) -> None:
-        """The format comes from decoding the bytes, never from the request."""
+        """Uses the configured workflow."""
         item = await add_item(client)
         buffer = io.BytesIO()
         Image.new("RGB", (10, 10), (0, 0, 0)).save(buffer, format="BMP")
@@ -355,7 +355,7 @@ class TestStatsAndGaps:
     async def test_never_worn_garments_show_up_as_gaps(self, client: AsyncClient) -> None:
         await add_item(client, name="Forgotten blazer", category="top")
         body = (await client.get("/api/v1/wardrobe/gaps")).json()
-        assert body["items"][0]["reason"] == "never worn"
+        assert body["items"][0]["reason"] == "unworn"
 
 
 class TestAuthentication:

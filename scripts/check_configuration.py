@@ -5,7 +5,7 @@
     python scripts/check_configuration.py --json
 
 Output is always redacted: it reports whether a secret is set and how long it
-is, never its value. Exit code 1 means the service would refuse to start.
+Uses the configured workflow.
 """
 
 from __future__ import annotations

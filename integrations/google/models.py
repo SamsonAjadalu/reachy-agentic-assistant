@@ -1,6 +1,6 @@
 """Normalised shapes returned by the Google providers.
 
-The API never exposes a raw Google payload. Those payloads are large, change
+Uses the configured workflow.
 without notice, and carry fields the assistant has no business handing to a
 conversational model. Everything is reduced to a small, stable record here, and
 the real and mock providers return the identical type so a test against the mock
@@ -39,7 +39,7 @@ class EmailBody(EmailSummary):
 
 
 class EmailDraft(BaseModel):
-    """A Gmail draft the assistant may create freely but must not send alone."""
+    """Uses the configured workflow."""
 
     id: str
     message_id: str | None = None

@@ -76,9 +76,11 @@ def register_action_executors() -> None:
 def register_task_handlers() -> None:
     """Register background handlers before the worker can claim a queued row."""
     from documents.tasks import register_document_tasks
+    from vision.tasks import register_vision_tasks
     from workstation.tasks import register_workstation_tasks
 
     register_document_tasks()
+    register_vision_tasks()
     register_workstation_tasks()
 
 

@@ -5,7 +5,7 @@ router with no inbound path from the public internet, and a webhook would mean
 exposing a port and terminating TLS for one bot.
 
 Everything arriving here is untrusted. An update is acted on only when its chat
-id is allowlisted; anything else is counted and dropped. Message text is never
+Uses the configured workflow.
 interpreted as an instruction, only matched against a fixed command table or
 forwarded verbatim to the Reachy Pi text-turn endpoint when enabled.
 """

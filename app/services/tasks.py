@@ -109,7 +109,7 @@ async def list_tasks(
             select(Task)
             .where(*conditions)
             .order_by(
-                # Nulls last: an undated task should not outrank a dated one.
+                # Uses the configured workflow.
                 Task.due_at.is_(None).asc(),
                 Task.due_at.asc(),
                 Task.created_at.desc(),

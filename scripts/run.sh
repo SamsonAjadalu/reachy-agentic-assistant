@@ -25,7 +25,7 @@ APP_DATA_DIR="${APP_DATA_DIR/#\~/$HOME}"
 export APP_DATA_DIR
 export APP_LOG_FORMAT="${APP_LOG_FORMAT:-console}"
 
-# Placeholder tokens are fine in mock mode; never print their values.
+# Placeholder tokens are fine in mock mode; their values stay out of output.
 if [[ -z "${PA_API_TOKEN:-}" ]]; then
   export PA_API_TOKEN="demo-mock-token-0123456789abcdef0123456789ab"
 fi

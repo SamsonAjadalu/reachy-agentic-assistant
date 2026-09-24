@@ -19,7 +19,7 @@
 #   There is no separate telegram unit — two pollers would fight over getUpdates offsets.
 #
 # Optional split: disable WORKER_ENABLED here and enable reachy-personal-assistant-worker.service
-# instead. Never run two scheduler-owning API instances.
+# instead. Use one scheduler-owning API instance.
 
 [Unit]
 Description=Reachy Personal Assistant API
@@ -36,10 +36,10 @@ WorkingDirectory=@REPO_ROOT@
 Environment=APP_HOST=127.0.0.1
 Environment=APP_PORT=8080
 
-# Optional: point at your checkout's .env. Minus prefix = do not fail if missing.
+# Optional: point at your checkout's .env. The leading minus accepts a missing file.
 EnvironmentFile=-@ENV_FILE@
 
-# Runtime data never lives in the git checkout.
+# Runtime data is stored under APP_DATA_DIR.
 Environment=APP_DATA_DIR=@APP_DATA_DIR@
 
 # Fernet key via systemd credentials (tmpfs, owner-only). Generate with:

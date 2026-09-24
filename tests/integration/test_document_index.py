@@ -2,7 +2,7 @@
 
 The containment cases are the important ones: the index walks a directory the
 owner nominated, but the paths that come back out of it are then handed to a
-read endpoint, and that endpoint must not be a way to read anything else.
+Uses the configured workflow.
 """
 
 from __future__ import annotations
@@ -151,7 +151,7 @@ class TestSearch:
     def test_fts_operators_in_a_query_are_neutralised(
         self, index: DocumentIndex, query: str
     ) -> None:
-        """A spoken phrase must never become an FTS expression or a syntax error."""
+        """Uses the configured workflow."""
         index.search(query)  # no exception is the assertion
 
     def test_a_query_with_no_words_is_refused(self, index: DocumentIndex) -> None:
@@ -183,7 +183,7 @@ class TestReading:
     def test_a_symlink_pointing_out_is_refused(
         self, index: DocumentIndex, corpus: Path, tmp_path: Path
     ) -> None:
-        """A root the owner trusts can still contain a link somewhere they do not."""
+        """Uses the configured workflow."""
         secret = tmp_path / "secret.txt"
         secret.write_text("private", encoding="utf-8")
         (corpus / "link.txt").symlink_to(secret)

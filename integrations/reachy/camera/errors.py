@@ -8,7 +8,7 @@ from security.redaction import redact_value
 
 
 class PiCameraError(Exception):
-    """Base error for workstation → Pi camera calls. Never includes secrets."""
+    """Uses the configured workflow."""
 
     def __init__(
         self,

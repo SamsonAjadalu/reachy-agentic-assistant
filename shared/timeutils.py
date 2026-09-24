@@ -81,7 +81,7 @@ def duration_from_parts(
 ) -> timedelta:
     """Build a delay from structured fields.
 
-    Relative reminders arrive as structured parts, never as free text: date
+    Relative reminders arrive as structured parts: date
     parsing belongs to the conversational model on the Reachy side, not to this
     backend.
     """

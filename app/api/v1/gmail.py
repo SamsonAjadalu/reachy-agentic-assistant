@@ -1,6 +1,6 @@
 """Gmail endpoints.
 
-Reads and draft creation answer synchronously. Transmitting mail never happens
+Uses the configured workflow.
 here: ``POST /actions/send-draft`` only records a pending action. The message
 leaves only after the owner approves the exact draft revision in Telegram.
 """

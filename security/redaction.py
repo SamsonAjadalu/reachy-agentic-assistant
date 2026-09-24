@@ -5,7 +5,7 @@ Two layers, because either one alone leaks eventually:
 * A registry of exact secret values, populated at startup from settings. Catches
   a token that reaches a log line through any code path.
 * Pattern matching on well-known credential shapes. Catches secrets this process
-  never held in settings, such as a bearer token echoed from a request header.
+  Uses the configured workflow.
 """
 
 from __future__ import annotations

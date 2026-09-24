@@ -1,16 +1,16 @@
 # Operations
 
-Day-to-day running of the Reachy Personal Assistant on the workstation.
+Day-to-day running of Reachy Agentic Assistant on the workstation.
 
 ## Layout
 
 | Path | Purpose |
 |------|---------|
-| Git checkout | Application code, config templates, systemd unit templates |
+| Application files | Code, config templates, and systemd unit templates |
 | `APP_DATA_DIR` (default `~/.local/share/reachy-personal-assistant`) | SQLite databases, encrypted tokens, wardrobe images, document index, backups |
 | Fernet key file | **Outside** `APP_DATA_DIR` — e.g. `~/.config/reachy-personal-assistant/pa_secret_key` or systemd `LoadCredential` |
 
-Runtime data never lives inside the git checkout. A backup of `APP_DATA_DIR` must not also contain the key that decrypts it.
+Runtime data is stored under `APP_DATA_DIR`. Store the decryption key separately from APP_DATA_DIR backups.
 
 ## Install (user systemd)
 
@@ -36,7 +36,7 @@ loginctl enable-linger $USER
 loginctl show-user $USER -p Linger
 ```
 
-`install-user.sh` prompts for this; it does not enable lingering automatically. Without it, the assistant only runs while your graphical or SSH session is active.
+`install-user.sh` prompts for this. The assistant runs headlessly after lingering is enabled.
 
 ### System install
 
@@ -46,7 +46,7 @@ For a dedicated service account and paths under `/var/lib` and `/etc`, run:
 ./deployment/workstation/install-system.sh
 ```
 
-That script **prints** exact `sudo` commands; it does not execute them. System units do not need lingering.
+That script **prints** exact `sudo` commands for manual execution. System units use the system service manager directly.
 
 ## Process model
 
@@ -67,7 +67,7 @@ Optional split:
 | `reachy-personal-assistant-api` | true | false | Scheduler + Telegram |
 | `reachy-personal-assistant-worker` | false | true | Worker only (port 8081 in template) |
 
-Never run two scheduler-owning instances.
+Use one scheduler-owning instance.
 
 ## Encryption key
 
@@ -95,7 +95,7 @@ Leave `PA_SECRET_KEY` unset in production. Alternatives: `PA_SECRET_KEY_FILE` po
 3. Restore databases: `python scripts/restore_database.py --latest --force`
 4. Start the service.
 
-OAuth tokens in `${APP_DATA_DIR}/secrets/google_tokens.enc` are not included in SQLite backups; keep separate backup policy for that file if needed.
+OAuth tokens in `${APP_DATA_DIR}/secrets/google_tokens.enc` use a separate backup policy from SQLite data.
 
 ## Logs
 
@@ -139,7 +139,7 @@ Archives land in `${APP_DATA_DIR}/backups/` unless `BACKUP_ROOT` is set. Retenti
 
 ## Document indexing
 
-Incremental re-indexing is scheduled inside the API process (`DOCUMENT_INDEX_INTERVAL_SECONDS`, default 3600). Optional timer `reachy-personal-assistant-document-index.timer` POSTs to `/api/v1/documents/reindex` for a manual nudge — not enabled by default.
+Incremental re-indexing is scheduled inside the API process (`DOCUMENT_INDEX_INTERVAL_SECONDS`, default 3600). Optional timer `reachy-personal-assistant-document-index.timer` POSTs to `/api/v1/documents/reindex` for a manual nudge.
 
 ## Uninstall
 

@@ -22,7 +22,7 @@ class SuccessResponse[T](BaseModel):
 
 class ErrorBody(BaseModel):
     code: str = Field(description="Stable machine-readable error code.")
-    message: str = Field(description="Human-readable summary. Never contains secrets.")
+    message: str = Field(description="Human-readable summary. Credentials remain private.")
     details: dict[str, Any] | None = None
 
 

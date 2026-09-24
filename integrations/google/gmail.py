@@ -47,7 +47,7 @@ GMAIL_MODIFY_SCOPE = "https://www.googleapis.com/auth/gmail.modify"
 MAX_RESULTS = 50
 MAX_BODY_CHARS = 20000
 MAX_RECIPIENTS = 10
-# System labels that must never be applied/removed via the sync hygiene path.
+# Uses the configured workflow.
 FORBIDDEN_LABEL_IDS = frozenset({"TRASH", "SPAM"})
 DEFAULT_ATTACHMENT_MAX_BYTES = 15 * 1024 * 1024
 
@@ -154,7 +154,7 @@ class GmailService:
         body: str,
         cc: list[str] | None = None,
     ) -> EmailDraft:
-        """Store a draft. Never transmits mail; that is a separate approved step."""
+        """Uses the configured workflow."""
         self._client.tokens.require_scope(GMAIL_COMPOSE_SCOPE)
         recipients = validate_recipients(to)
         copies = validate_recipients(cc or [], allow_empty=True)
@@ -181,7 +181,7 @@ class GmailService:
         )
 
     async def create_reply_draft(self, *, message_id: str, body: str) -> EmailDraft:
-        """Create a threaded reply draft. Never transmits mail."""
+        """Uses the configured workflow."""
         self._client.tokens.require_scope(GMAIL_READ_SCOPE)
         self._client.tokens.require_scope(GMAIL_COMPOSE_SCOPE)
         context = await self._fetch_reply_context(message_id)
@@ -289,7 +289,7 @@ class GmailService:
             draft = await self.get_draft(draft_id)
         except IntegrationError as exc:
             # Gmail deletes a draft after a successful send; a retry that lands
-            # here must not invent a second transmission.
+            # Uses the configured workflow.
             raise ValidationError(
                 "This draft is gone or already sent, so nothing was transmitted again."
             ) from exc
@@ -436,7 +436,7 @@ def validate_recipients(values: list[str], *, allow_empty: bool = False) -> list
 
 def validate_header(value: str, field: str) -> str:
     if _HEADER_INJECTION.search(value):
-        raise ValidationError(f"The {field} must not contain line breaks.")
+        raise ValidationError(f"The {field} supports single-line values.")
     return value.strip()[:500]
 
 

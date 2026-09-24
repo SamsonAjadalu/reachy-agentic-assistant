@@ -27,7 +27,7 @@ from shared.errors import IntegrationError, ProviderRateLimitError, ValidationEr
 
 
 class StubTokenProvider(TokenProvider):
-    """A token provider that never talks to Google's token endpoint."""
+    """Uses the configured workflow."""
 
     def __init__(self, settings: Settings, scopes: tuple[str, ...] = ALL_SCOPES) -> None:
         super().__init__(settings)
@@ -99,7 +99,7 @@ class TestGmailContract:
     async def test_listing_asks_for_metadata_only(
         self, client: GoogleClient, settings: Settings
     ) -> None:
-        """Listing must not pull whole bodies; that is a different, larger request."""
+        """Uses the configured workflow."""
         respx.get(f"{GMAIL_BASE}/users/me/messages").mock(return_value=ok(MESSAGE_LIST))
         detail = respx.get(f"{GMAIL_BASE}/users/me/messages/m1").mock(
             return_value=ok(MESSAGE_DETAIL)
@@ -601,7 +601,7 @@ class TestClientBehaviour:
     async def test_pagination_stops_at_the_requested_limit(
         self, client: GoogleClient, settings: Settings
     ) -> None:
-        """A large mailbox must not turn one question into unbounded requests."""
+        """Uses the configured workflow."""
         respx.get(f"{GMAIL_BASE}/users/me/messages").mock(
             return_value=ok(
                 {

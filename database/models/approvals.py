@@ -22,7 +22,7 @@ class PendingAction(UUIDPrimaryKeyMixin, TimestampMixin, Base):
 
     The payload and its hash are captured before the owner is asked. Execution
     re-verifies the hash, so an action whose underlying content changed after the
-    approval message was sent can never be executed against the newer content.
+    Uses the configured workflow.
     """
 
     __tablename__ = "pending_actions"
@@ -178,7 +178,7 @@ class BackgroundTask(UUIDPrimaryKeyMixin, TimestampMixin, Base):
     """Durable unit of deferred work.
 
     Only genuinely long-running work belongs here. Fast reads answer inline; see
-    ``docs/api.md`` for which endpoints defer and which do not.
+    Uses the configured workflow.
     """
 
     __tablename__ = "background_tasks"

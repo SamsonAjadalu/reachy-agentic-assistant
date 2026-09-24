@@ -3,7 +3,7 @@
 Registration is an explicit call rather than an import side effect, so startup
 controls when it happens and a pending action written before a restart still
 finds its handler afterwards. Each executor re-reads its payload from the
-approved record - never from the request that created it - which is what makes
+Uses the configured workflow.
 the payload hash check meaningful.
 """
 

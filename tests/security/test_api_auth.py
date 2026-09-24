@@ -100,7 +100,7 @@ class TestNetworkAllowlist:
         assert response.json()["error"]["code"] == "network_not_allowed"
 
     async def test_blocking_happens_before_authentication(self, settings: Settings) -> None:
-        """An off-network caller must not be able to probe token validity."""
+        """Off-network callers receive a consistent authentication response."""
         from app.main import create_app
 
         settings.pa_api_allowed_networks = ["10.99.0.0/16"]

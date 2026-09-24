@@ -1,6 +1,6 @@
 # Scripts the assistant is allowed to run on this workstation.
 #
-# This file is the allowlist. Nothing outside it can be executed, and it cannot
+# This file is the allowlist. Only listed entries are executable, and each entry
 # be edited through the API - adding a capability is a deliberate change here,
 # reviewed in git like any other code.
 #
@@ -23,7 +23,7 @@
 #                     otherwise the value is positional.
 #
 # The entries below are commented out because they reference paths that will
-# not exist on a fresh checkout. Uncomment and correct the paths for scripts
+# is absent on a fresh checkout. Uncomment and correct the paths for scripts
 # that actually exist on your machine.
 
 scripts: []

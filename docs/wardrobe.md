@@ -1,6 +1,6 @@
 # Wardrobe
 
-Local wardrobe cataloguing, outfit recommendations, and laundry tracking. Images and metadata live under `APP_DATA_DIR`, not in the git checkout.
+Local wardrobe cataloguing, outfit recommendations, and laundry tracking. Images and metadata live under `APP_DATA_DIR`.
 
 ## Storage
 
@@ -13,7 +13,7 @@ wardrobe/
   outfits/      # composite outfit images (if used)
 ```
 
-Override with `WARDROBE_IMAGE_ROOT` if needed (must remain outside the checkout or be an explicit path you control).
+Override with `WARDROBE_IMAGE_ROOT` if you want to use a different local folder.
 
 ## Adding items
 
@@ -44,7 +44,7 @@ Adds sample items tagged `demo-seed` in the `notes` field.
 
 ## Backup
 
-Wardrobe images are files on disk under `APP_DATA_DIR`. Include the whole directory in filesystem backups; SQLite backup scripts do not copy image binaries.
+Wardrobe images are files on disk under `APP_DATA_DIR`. Include the whole directory in filesystem backups; Filesystem backups include image binaries; SQLite backups cover database records.
 
 ## Related
 

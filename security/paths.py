@@ -32,7 +32,7 @@ _RESERVED_STEMS = frozenset(
 
 
 def normalise_roots(roots: list[str] | list[Path]) -> list[Path]:
-    """Resolve configured roots once, dropping any that do not exist."""
+    """Uses the configured workflow."""
     resolved: list[Path] = []
     for root in roots:
         path = Path(root).expanduser()
@@ -111,7 +111,7 @@ def safe_filename(raw: str, *, default: str = "file", extension: str | None = No
     """Reduce arbitrary text to a filename safe to create on disk.
 
     Used for attachment downloads and wardrobe uploads, where the name is
-    attacker-influenced and must never contain a separator or traversal segment.
+    Uses the configured workflow.
     """
     text = unicodedata.normalize("NFKD", raw).encode("ascii", "ignore").decode("ascii")
     text = text.replace("\\", "/").split("/")[-1].strip()

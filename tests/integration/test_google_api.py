@@ -30,7 +30,7 @@ from shared.enums import PendingActionStatus
 
 @pytest.fixture(autouse=True)
 def providers():
-    """Fresh mock providers per test so recorded writes never leak between them."""
+    """Uses the configured workflow."""
     gmail = MockGmailService()
     calendar = MockCalendarService()
     contacts = MockContactsService()

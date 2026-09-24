@@ -1,0 +1,40 @@
+# Perception sidecar. Run as a separate process from the FastAPI API,
+# unit on the API virtualenv if that venv has no torch; point @PYTHON@ at
+# .venv-vision after `pip install -e '.[vision]'`.
+#
+# Copy to:  ~/.config/systemd/user/reachy-vision-sidecar.service
+# Enable:   systemctl --user enable --now reachy-vision-sidecar.service
+#
+# This unit does not own the scheduler lock and does not start Telegram.
+# Bind loopback only. The FastAPI service will HTTP-submit jobs later.
+
+[Unit]
+Description=Reachy perception sidecar
+Documentation=file://@REPO_ROOT@/deployment/vision_3090/README.md
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=@REPO_ROOT@
+
+Environment=VISION_SIDECAR_HOST=127.0.0.1
+Environment=VISION_SIDECAR_PORT=8090
+EnvironmentFile=-@ENV_FILE@
+Environment=APP_DATA_DIR=@APP_DATA_DIR@
+Environment=PYTHONPATH=@REPO_ROOT@
+Environment=PYTHONUNBUFFERED=1
+
+# Hugging Face cache stays under APP_DATA_DIR.
+Environment=HF_HOME=@APP_DATA_DIR@/vision/hf
+
+ExecStart=@PYTHON@ -m vision_sidecar --host 127.0.0.1 --port ${VISION_SIDECAR_PORT}
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=60
+
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=default.target

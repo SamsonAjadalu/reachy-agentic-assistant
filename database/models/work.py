@@ -112,7 +112,7 @@ class ScriptRun(UUIDPrimaryKeyMixin, TimestampMixin, Base):
     script_name: Mapped[str] = mapped_column(String(80), nullable=False, index=True)
     arguments_json: Mapped[str] = mapped_column(Text, nullable=False, default="{}")
     resolved_argv_json: Mapped[str | None] = mapped_column(
-        Text, comment="Exact argv array executed. Never a shell string."
+        Text, comment="Exact argv array executed as an argument list."
     )
     status: Mapped[str] = mapped_column(
         String(30), nullable=False, default=ScriptRunStatus.PENDING_APPROVAL.value

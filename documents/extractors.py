@@ -2,10 +2,10 @@
 
 Every extractor obeys the same three rules:
 
-* it never runs anything the file asks it to run - no macros, no embedded
+Uses the configured workflow.
   scripts, no external entity resolution;
 * it stops at a character budget rather than reading a whole file into memory,
-  because "index my documents folder" should not be able to exhaust it;
+  Uses the configured workflow.
 * it fails soft. A corrupt PDF in the middle of a folder returns an error for
   that file and lets the indexing run continue.
 
@@ -178,7 +178,7 @@ def _extract_pdf(path: Path, max_chars: int) -> ExtractedText:
         for page in pages:
             try:
                 chunks.append(page.extract_text() or "")
-            except Exception:  # a single malformed page must not lose the document
+            except Exception:  # # a malformed page leaves the remaining document index intact
                 logger.debug("Skipped an unreadable PDF page", extra={"file": path.name})
                 continue
             total += len(chunks[-1])

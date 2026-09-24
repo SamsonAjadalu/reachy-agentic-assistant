@@ -177,7 +177,7 @@ class TestReachyPending:
         pending = (await client.get("/api/v1/reachy/pending-notifications")).json()
         assert pending["total"] >= 1
         assert any(item["id"] == created["id"] for item in pending["items"])
-        # Fetching must not consume the message.
+        # Uses the configured workflow.
         again = (await client.get("/api/v1/reachy/pending")).json()
         assert any(item["id"] == created["id"] for item in again["items"])
 

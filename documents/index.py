@@ -39,7 +39,7 @@ SCHEMA_VERSION = 1
 SNIPPET_TOKENS = 24
 MAX_RESULTS = 100
 
-# Directories that are never worth indexing and are frequently enormous.
+# Uses the configured workflow.
 SKIP_DIRECTORIES = frozenset(
     {
         ".git",

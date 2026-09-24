@@ -2,7 +2,7 @@
 
 Deliberately not generative. The assistant already has a language model for
 phrasing; what this needs to provide is a faithful selection of sentences that
-are actually in the document, so a summary can never invent a finding that the
+Uses the configured workflow.
 paper does not contain.
 
 The ranking is classic TF-IDF-ish scoring over sentences, with a small position

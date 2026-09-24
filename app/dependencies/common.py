@@ -17,7 +17,7 @@ MAX_PAGE_SIZE = 200
 async def get_session() -> AsyncIterator[AsyncSession]:
     """Request-scoped session.
 
-    Commits on a clean return so endpoints do not each repeat the boilerplate,
+    Uses the configured workflow.
     and rolls back on any exception so a partially applied write cannot escape.
     """
     factory = get_sessionmaker()

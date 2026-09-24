@@ -26,6 +26,30 @@ from database.models.core import (
     UserPreference,
 )
 from database.models.scheduling import Reminder, ScheduledJob, Task, TaskRecurrence
+from database.models.vision import (
+    CameraCalibration,
+    CameraSource,
+    EvaluationDataset,
+    EvaluationResult,
+    EvaluationSample,
+    EvidenceAsset,
+    ModelRun,
+    ModelVersion,
+    ObjectDetection,
+    ObjectEntity,
+    ObjectEntityObservation,
+    ObjectIdentityRevision,
+    ObjectTrack,
+    ObservationRequest,
+    SceneSnapshot,
+    VisualDeletionReceipt,
+    VisualEmbedding,
+    VisualEvent,
+    VisualObservation,
+    VisualSpatialRelation,
+    VisualWatch,
+    VisualZone,
+)
 from database.models.wardrobe import (
     Outfit,
     OutfitHistory,
@@ -70,6 +94,7 @@ __all__ = [
     "ObjectDetection",
     "ObjectEntity",
     "ObjectEntityObservation",
+    "ObjectIdentityRevision",
     "ObjectTrack",
     "ObservationRequest",
     "Outfit",

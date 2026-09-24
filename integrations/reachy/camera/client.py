@@ -622,7 +622,7 @@ def _assert_scan_payload_safe(payload: dict[str, Any]) -> None:
     extra = FORBIDDEN_SCAN_KEYS.intersection(payload)
     if extra:
         raise PiCameraError(
-            "Scan payload must not contain joint targets or poses.",
+            "Scan payload contains camera fields; motion targets use the motion API.",
             code="forbidden_scan_field",
             details={"fields": sorted(extra)},
         )

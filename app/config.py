@@ -2,9 +2,9 @@
 
 Two rules shape this module:
 
-1. Runtime data never lives inside the repository. Everything mutable hangs off
-   ``APP_DATA_DIR``, which defaults outside the checkout.
-2. The secret that decrypts the OAuth token store is never stored beside the
+Uses the configured workflow.
+   ``APP_DATA_DIR``, which stores runtime data.
+Uses the configured workflow.
    token store. It comes from the environment, a systemd credential or the OS
    keyring, and is only ever held in memory. See ``security/keyring.py``.
 """
@@ -101,7 +101,7 @@ class Settings(BaseSettings):
                 str(Path.home() / ".local" / "share" / "reachy-personal-assistant"),
             )
         ),
-        description="Root for all mutable runtime state. Must be outside the git checkout.",
+        description="Root for all mutable runtime state.",
     )
 
     database_url: str = Field(
@@ -122,7 +122,7 @@ class Settings(BaseSettings):
         default=SecretStr(""),
         description=(
             "Fernet key protecting the OAuth token store. Supplied via the environment, "
-            "a systemd LoadCredential file or the OS keyring; never written next to the "
+            "a systemd LoadCredential file or the OS keyring; stored separately from the "
             "encrypted store it protects."
         ),
     )
@@ -275,7 +275,7 @@ class Settings(BaseSettings):
         resolved = value.expanduser().resolve()
         if resolved == REPO_ROOT or REPO_ROOT in resolved.parents:
             raise ValueError(
-                f"APP_DATA_DIR ({resolved}) is inside the git checkout ({REPO_ROOT}). "
+                f"APP_DATA_DIR ({resolved}) is inside the application directory ({REPO_ROOT}). "
                 "Runtime data must live outside the repository."
             )
         return resolved

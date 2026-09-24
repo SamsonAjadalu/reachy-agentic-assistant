@@ -106,7 +106,7 @@ class TestLifecycle:
         assert second["status"] == "completed"
 
     async def test_cancel_sets_the_cancelled_timestamp(self, client: AsyncClient) -> None:
-        task = (await client.post("/api/v1/tasks", json={"description": "Never mind"})).json()
+        task = (await client.post("/api/v1/tasks", json={"description": "Forget it"})).json()
         body = (await client.post(f"/api/v1/tasks/{task['id']}/cancel")).json()
         assert body["status"] == "cancelled"
         assert body["cancelled_at"] is not None

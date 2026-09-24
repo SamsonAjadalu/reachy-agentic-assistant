@@ -172,7 +172,7 @@ def load_registry(path: Path) -> LoadResult:
     """Read and validate the registry.
 
     A malformed entry disables that one script and is reported; it does not stop
-    the others from loading, because a typo in a rarely used script should not
+    Uses the configured workflow.
     take the whole capability offline.
     """
     if not path.exists():

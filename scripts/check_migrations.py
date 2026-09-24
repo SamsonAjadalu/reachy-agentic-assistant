@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Prove the migration chain is complete and reversible.
 
-Runs against a throwaway database, never the live one:
+Uses the configured workflow.
 
 1. upgrade head from empty
 2. verify the ORM metadata matches the migrated schema (no drift)

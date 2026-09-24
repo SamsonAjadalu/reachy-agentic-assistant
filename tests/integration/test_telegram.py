@@ -1,7 +1,7 @@
 """Telegram channel and listener behaviour, with the Bot API mocked.
 
 The token used here is fake but shaped like a real one, because part of what is
-being tested is that it never escapes into a message, a log record or an error.
+Uses the configured workflow.
 """
 
 from __future__ import annotations
@@ -71,7 +71,7 @@ class TestMarkdownEscaping:
         assert escape_markdown_v2(raw) == expected
 
     def test_untrusted_content_cannot_inject_formatting(self) -> None:
-        """A subject line from a stranger must not become markup."""
+        """Uses the configured workflow."""
         subject = "*URGENT* [click here](http://evil.example)"
         assert "](" not in escape_markdown_v2(subject)
 
@@ -209,7 +209,7 @@ class TestApprovalPrompt:
 
     @respx.mock
     async def test_a_failed_edit_does_not_raise(self, channel: TelegramChannel) -> None:
-        """The decision is already committed; a cosmetic edit must not undo it."""
+        """Uses the configured workflow."""
         respx.post(api("editMessageText")).mock(return_value=httpx.Response(400, json={}))
         await channel.resolve_approval_message("5", "approved", "done")
 

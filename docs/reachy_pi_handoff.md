@@ -25,33 +25,33 @@ wiring:
 1. Symlink or copy `reachy_app_tools.py` into the profile directory.
 2. Add `reachy_app_tools` to the profile `tools.txt`.
 3. Add a `.pth` file in the conversation virtualenv that points at this repository
-   checkout (so `reachy_client` imports resolve). Do not install the full workstation
-   service on the Pi.
+   checkout (so `reachy_client` imports resolve). Install the Pi-specific dependencies
+   Reachy Agentic Assistant service on the robot.
 
 ## Configuration
 
 | Variable | Required | Default | Meaning |
 |---|---:|---:|---|
-| `PA_API_URL` | yes | none | Absolute HTTP(S) workstation API base URL |
-| `PA_API_TOKEN` | yes | none | Bearer token shared with the workstation API |
+| `PA_API_URL` | yes | none | Absolute HTTP(S) Reachy Agentic Assistant API base URL |
+| `PA_API_TOKEN` | yes | none | Bearer token shared with Reachy Agentic Assistant |
 | `PA_API_CONNECT_TIMEOUT` | no | `3` | TCP connection timeout, seconds |
 | `PA_API_TIMEOUT` | no | `10` | Request read/write timeout, seconds |
 
-Never commit a `.env` or token on the Pi.
+Keep `.env` and tokens in the robot's local configuration.
 
 ## Behaviour notes
 
 - Tools must stay async; blocking work stalls the conversation event loop.
 - Fast API calls use bounded HTTP timeouts. Long work (indexing, scripts)
-  stays on the workstation and returns tickets / watch IDs.
-- Supported creates use idempotency keys. Irreversible writes are not blindly retried.
-- Externally visible writes require Telegram approval on the workstation.
+  stays on the workstation service and returns tickets / watch IDs.
+- Supported creates use idempotency keys. Irreversible writes use one approved request.
+- Externally visible writes require Telegram approval via Reachy Agentic Assistant.
 
 ## Camera / visual memory
 
-When enabling vision on the workstation, point `REACHY_CAMERA_URL` at the Pi camera
-HTTP origin (for example `http://reachy-mini.local:7861`) and share a bearer
-token. Attended scans require an explicit Pi-side enable flag; they are off by
-default.
+When enabling vision on the workstation, point `REACHY_CAMERA_URL` at the robot
+camera HTTP origin (for example `http://reachy-mini.local:7861`) and share a
+bearer token. Attended scans require an explicit robot-side enable flag; they
+are off by default.
 
-See the root `README.md` for workstation install, mock mode, and integration flags.
+See the root [README.md](../README.md) for install, mock mode, and integration flags.

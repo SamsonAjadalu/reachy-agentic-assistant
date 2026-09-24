@@ -47,7 +47,7 @@ PROPOSED_PRESET_IDS = frozenset(
     }
 )
 
-# Keys that must never appear on a scan request. Joint targets are not
+# Uses the configured workflow.
 # expressible through PiCameraPort.request_scan; this set is a wire-level net.
 FORBIDDEN_SCAN_KEYS = frozenset(
     {

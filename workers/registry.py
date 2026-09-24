@@ -22,7 +22,7 @@ class TaskContext:
     """Everything a handler is given.
 
     ``report_progress`` and ``is_cancelled`` are supplied by the runner so a
-    handler never touches the database or the task row directly.
+    Uses the configured workflow.
     """
 
     task_id: str

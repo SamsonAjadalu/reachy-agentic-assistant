@@ -1,6 +1,6 @@
 # Google setup
 
-Google Calendar, Gmail, Contacts and Drive share one OAuth grant stored encrypted on disk — not in SQLite.
+Google Calendar, Gmail, Contacts and Drive share one OAuth grant stored in an encrypted file under APP_DATA_DIR.
 
 ## Prerequisites
 
@@ -49,9 +49,9 @@ curl -s -H "Authorization: Bearer $PA_API_TOKEN" \
 
 ## Scopes
 
-Read scopes are always requested. Write scopes (`gmail.compose`, `gmail.send`, `gmail.modify`, `calendar.events`) are included at setup time so mid-conversation re-consent is not required on a headless machine.
+Read scopes are always requested. Write scopes (`gmail.compose`, `gmail.send`, `gmail.modify`, `calendar.events`) are included at setup time for headless operation.
 
-- Draft creation uses `gmail.compose` and does not transmit mail.
+- Draft creation uses `gmail.compose`; sending follows the approval flow.
 - Outbound sends use `gmail.send` against an existing draft and remain **approval-gated** (exact draft revision hash).
 - Archive and label changes use `gmail.modify` synchronously (reversible); trash/spam are refused on this path.
 - Calendar create/update/delete are **approval-gated**; `POST /calendar/events/propose` is a dry-run only.

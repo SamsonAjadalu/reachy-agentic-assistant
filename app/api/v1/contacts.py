@@ -2,7 +2,7 @@
 
 Two sources are merged: contacts stored locally in this database and, when
 authorised, Google contacts. Local entries win on a name collision, because a
-correction the owner made here should not be overridden by a stale Google entry.
+Uses the configured workflow.
 """
 
 from __future__ import annotations

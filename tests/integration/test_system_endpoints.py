@@ -33,7 +33,7 @@ class TestPing:
         assert body["server_time_utc"] != body["server_time_local"]
 
     async def test_answers_synchronously_without_a_task_ticket(self, client: AsyncClient) -> None:
-        # Fast reads must not be deferred; only long-running work returns a ticket.
+        # Uses the configured workflow.
         body = (await client.get("/api/v1/ping")).json()
         assert "task_id" not in body
 

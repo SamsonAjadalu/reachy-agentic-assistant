@@ -1,0 +1,2 @@
+depth-anything-3>=0.1.1
+# Optional for DA3MONO-LARGE. Install only on the Windows 3090 vision host.

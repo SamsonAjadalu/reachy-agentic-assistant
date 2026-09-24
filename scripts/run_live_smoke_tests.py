@@ -4,12 +4,11 @@
     python scripts/run_live_smoke_tests.py
     python scripts/run_live_smoke_tests.py --allow-external-write
 
-By default only read-only / status probes run. Any action that could create
-mail, calendar events, or Notion blocks requires
-``--allow-external-write`` and still only raises approval tickets (it does not
-auto-approve).
+By default only read-only / status probes run. Actions that could create
+mail, calendar events, or Notion blocks require
+``--allow-external-write`` and still raise approval tickets for manual review.
 
-Never claims a provider passed unless the remote call succeeded in this run.
+A provider passes only when the remote call succeeds in this run.
 """
 
 from __future__ import annotations

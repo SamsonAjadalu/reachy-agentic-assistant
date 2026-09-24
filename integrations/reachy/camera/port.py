@@ -15,7 +15,7 @@ from integrations.reachy.camera.models import (
 
 @runtime_checkable
 class PiCameraPort(Protocol):
-    """Versioned camera/scan surface. Implementations must not expose joint targets."""
+    """Uses the configured workflow."""
 
     adapter_version: str
 

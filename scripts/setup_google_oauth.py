@@ -8,7 +8,7 @@ Run once on the workstation, with a browser available:
 It opens the consent screen, catches the redirect on a loopback listener, and
 writes the refresh token to the encrypted store. The loopback redirect is used
 rather than the out-of-band flow because Google retired OOB, and because a code
-that never leaves the machine cannot be shoulder-surfed off a terminal.
+Uses the configured workflow.
 
 Nothing here writes a token to the terminal, the shell history or a log.
 """

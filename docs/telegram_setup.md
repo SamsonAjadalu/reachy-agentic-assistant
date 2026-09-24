@@ -4,9 +4,9 @@ Telegram is the approval and notification channel. Destructive or externally vis
 
 ## Architecture
 
-The bot uses **long polling**, not webhooks — the workstation typically has no inbound route from the internet.
+The bot uses **long polling**. The workstation typically operates without an inbound internet route.
 
-The listener runs **inside the scheduler-owning API process** only (`app/lifespan.py`). If another instance holds `${APP_DATA_DIR}/scheduler.lock`, Telegram is not started there. There is no separate `reachy-personal-assistant-telegram.service`.
+The listener runs **inside the scheduler-owning API process** (`app/lifespan.py`), with `${APP_DATA_DIR}/scheduler.lock` identifying the active instance.
 
 ## Bot creation
 

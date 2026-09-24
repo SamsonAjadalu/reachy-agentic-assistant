@@ -1,0 +1,17 @@
+# Minimal perception sidecar on the Windows RTX 3090 host.
+# Install into .venv-vision. Keep the Linux and workstation environments separate.
+
+fastapi>=0.115,<1.0
+uvicorn[standard]>=0.34,<1.0
+pydantic>=2.9,<3.0
+pydantic-settings>=2.6,<3.0
+httpx>=0.27,<1.0
+pillow>=11.0
+psutil>=6.0
+python-multipart>=0.0.20
+numpy>=2.0,<3.0
+safetensors>=0.4
+huggingface-hub>=0.26
+transformers>=4.51,<5.0
+# Install torch/torchvision separately from the CUDA wheel index:
+#   python -m pip install torch torchvision --index-url https://download.pytorch.org/whl/cu124

@@ -1,6 +1,6 @@
 """Bearer token authentication.
 
-The comparison is constant time, the token never appears in a log line or an
+Uses the configured workflow.
 error message, and a failure returns the same generic message whether the header
 was absent, malformed or simply wrong.
 """

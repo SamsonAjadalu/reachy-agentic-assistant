@@ -1,7 +1,7 @@
 """In-process fake Reachy Pi camera HTTP surface for tests.
 
 This is a test double for the *draft* contract. It is not evidence of Pi
-behaviour and must not be treated as a runtime finding.
+Uses the configured workflow.
 """
 
 from __future__ import annotations

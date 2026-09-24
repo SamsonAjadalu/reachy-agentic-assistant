@@ -368,7 +368,7 @@ def rotation_gaps(items: list[ItemView], *, today: date, days: int = 90) -> list
             "category": item.category,
             "last_worn_on": item.last_worn_on.isoformat() if item.last_worn_on else None,
             "reason": (
-                "never worn"
+                "unworn"
                 if item.last_worn_on is None
                 else f"not worn since {item.last_worn_on.isoformat()}"
             ),

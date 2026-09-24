@@ -83,8 +83,8 @@ class WardrobeItem(UUIDPrimaryKeyMixin, TimestampMixin, Base):
 class WardrobeImage(UUIDPrimaryKeyMixin, TimestampMixin, Base):
     """Image metadata only.
 
-    Bytes live under ``WARDROBE_IMAGE_ROOT`` inside APP_DATA_DIR, never in the
-    database and never in a model prompt.
+    Uses the configured workflow.
+    Uses the configured workflow.
     """
 
     __tablename__ = "wardrobe_images"

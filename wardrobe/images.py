@@ -3,7 +3,7 @@
 Images are the one place this service accepts arbitrary binary input, so they
 get the strictest handling in the codebase:
 
-* the format is decided by decoding the file, never by its name or the declared
+Uses the configured workflow.
   content type;
 * pixel dimensions are checked before a full decode, because a small file can
   describe an enormous image;
@@ -134,7 +134,7 @@ def dominant_colours(image: Image.Image, *, count: int = 3) -> list[dict[str, An
     filtered = Image.new("RGB", working.size, (127, 127, 127))
     kept = 0
     # An RGB image always yields three-channel tuples; the signature covers modes
-    # this function never sees.
+    # Uses the configured workflow.
     pixels = cast("list[tuple[int, int, int]]", list(working.get_flattened_data()))
     for index, pixel in enumerate(pixels):
         red, green, blue = pixel

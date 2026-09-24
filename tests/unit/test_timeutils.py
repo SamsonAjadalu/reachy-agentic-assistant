@@ -62,7 +62,7 @@ class TestLocalDay:
 
 class TestDaylightSaving:
     def test_a_time_that_does_not_exist_is_still_resolved(self) -> None:
-        """02:30 on the spring-forward morning never happens in Toronto."""
+        """Uses the configured workflow."""
         resolved = from_local(datetime(2026, 3, 8, 2, 30), TORONTO)
         assert resolved.tzinfo is UTC
 

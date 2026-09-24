@@ -37,7 +37,7 @@ dependencies = [
 
 [project.optional-dependencies]
 vision = [
-    # Install into a dedicated sidecar venv (.venv-vision), never the API venv.
+    # Install into a dedicated sidecar venv (.venv-vision), separate from the API venv.
     "numpy>=2.0",
     "torch>=2.5,<3.0",
     "torchvision>=0.20",

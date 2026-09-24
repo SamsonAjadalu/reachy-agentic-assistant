@@ -6,7 +6,7 @@ import re
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-SYSTEMD_DIR = REPO_ROOT / "deployment" / "main_pc" / "systemd"
+SYSTEMD_DIR = REPO_ROOT / "deployment" / "workstation" / "systemd"
 
 # systemd supports ${VAR} / $VAR but not bash ${VAR:-default} / ${VAR-default}.
 _BASH_DEFAULT = re.compile(r"\$\{[A-Za-z_][A-Za-z0-9_]*[:-][^}]+\}")
@@ -14,7 +14,7 @@ _BASH_DEFAULT = re.compile(r"\$\{[A-Za-z_][A-Za-z0-9_]*[:-][^}]+\}")
 
 def test_unit_files_avoid_bash_parameter_defaults() -> None:
     units = sorted(SYSTEMD_DIR.glob("*.service")) + sorted(SYSTEMD_DIR.glob("*.timer"))
-    assert units, "expected systemd unit templates under deployment/main_pc/systemd"
+    assert units, "expected systemd unit templates under deployment/workstation/systemd"
     offenders: list[str] = []
     for path in units:
         for line_no, line in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):

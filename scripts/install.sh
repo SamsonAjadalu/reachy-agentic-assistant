@@ -5,7 +5,7 @@
 #
 # Checks Python 3.12 and uv, creates .venv, installs dependencies, creates
 # .env from .env.example when missing, and applies database migrations.
-# Does not overwrite an existing .env and does not print or invent secrets.
+# Preserves an existing .env and keeps secrets out of output.
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -56,7 +56,7 @@ if [[ ! -f .env ]]; then
   echo "==> Creating .env from .env.example (not overwriting later)"
   [[ -f .env.example ]] || die ".env.example is missing"
   cp .env.example .env
-  # Safe local defaults for a first checkout. Existing .env files are never touched.
+  # Safe local defaults for a first checkout. Existing .env files stay unchanged.
   if grep -q '^APP_DATA_DIR=' .env; then
     sed -i "s|^APP_DATA_DIR=.*|APP_DATA_DIR=${DEFAULT_DATA_DIR}|" .env
   else
@@ -71,7 +71,7 @@ if [[ ! -f .env ]]; then
     sed -i 's|^APP_ENV=.*|APP_ENV=development|' .env
   fi
   echo "    wrote .env with APP_DATA_DIR=${DEFAULT_DATA_DIR} and MOCK_MODE=true"
-  echo "    edit .env before enabling live integrations; do not commit it"
+  echo "    edit .env before enabling live integrations; keep it local"
 else
   echo "==> .env already exists — leaving it unchanged"
 fi

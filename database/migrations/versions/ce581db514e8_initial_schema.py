@@ -571,7 +571,7 @@ def upgrade() -> None:
     sa.Column('script_id', sa.String(length=36), nullable=True),
     sa.Column('script_name', sa.String(length=80), nullable=False),
     sa.Column('arguments_json', sa.Text(), nullable=False),
-    sa.Column('resolved_argv_json', sa.Text(), nullable=True, comment='Exact argv array executed. Never a shell string.'),
+    sa.Column('resolved_argv_json', sa.Text(), nullable=True, comment='Exact argv array executed as an argument list.'),
     sa.Column('status', sa.String(length=30), nullable=False),
     sa.Column('approval_id', sa.String(length=36), nullable=True),
     sa.Column('pid', sa.Integer(), nullable=True),

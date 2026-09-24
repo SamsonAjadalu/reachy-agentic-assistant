@@ -1,4 +1,4 @@
-# Optional worker-only unit. Use when the API process should not run the background
+# Optional worker-only unit. Use when the API process runs without the background
 # worker in-process (WORKER_ENABLED=false on the API unit).
 #
 # This unit starts the same FastAPI application but disables the scheduler and enables
@@ -10,7 +10,7 @@
 #   API:    SCHEDULER_ENABLED=true,  WORKER_ENABLED=false
 #   Worker: SCHEDULER_ENABLED=false, WORKER_ENABLED=true
 #
-# Do NOT enable this unit when the API already runs with WORKER_ENABLED=true (default).
+# Enable this unit when the API runs with WORKER_ENABLED=false.
 
 [Unit]
 Description=Reachy Personal Assistant background worker

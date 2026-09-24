@@ -344,7 +344,7 @@ class TestLimits:
                 await asyncio.sleep(0.1)
 
     async def test_runaway_output_is_bounded(self, tmp_path: Path, settings: Settings) -> None:
-        """A script printing in a loop must not be able to fill the database."""
+        """Uses the configured workflow."""
         settings.workstation_max_output_bytes = 2000
         noisy = make_executable(
             tmp_path / "noisy.py",
@@ -418,7 +418,7 @@ class TestStopping:
             if await stop_run("run-stop"):
                 break
         else:
-            pytest.fail("The run never became stoppable.")
+            pytest.fail("The run remained active.")
 
         outcome = await asyncio.wait_for(task, timeout=15)
         assert outcome.status is ScriptRunStatus.STOPPED

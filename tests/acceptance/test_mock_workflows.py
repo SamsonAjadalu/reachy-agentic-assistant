@@ -86,7 +86,7 @@ async def test_draft_create_does_not_send_and_send_requires_approval(
         json={
             "to": ["friend@example.com"],
             "subject": "Acceptance draft",
-            "body": "This must not be sent without approval.",
+            "body": "Approval is required before sending this.",
         },
     )
     assert created.status_code == 201
@@ -99,7 +99,7 @@ async def test_draft_create_does_not_send_and_send_requires_approval(
         json={
             "to": ["friend@example.com"],
             "subject": "Acceptance draft",
-            "body": "This must not be sent without approval.",
+            "body": "Approval is required before sending this.",
         },
     )
     assert legacy.status_code == 410

@@ -153,7 +153,7 @@ class TestSingleExecution:
         channel: MockNotificationChannel,
         side_effects: list,
     ) -> None:
-        """A double tap on the Telegram button must not send two emails."""
+        """Uses the configured workflow."""
         _, approval = await _request(session, settings)
         token = approval.callback_token
 
@@ -225,7 +225,7 @@ class TestPayloadIntegrity:
         channel: MockNotificationChannel,
         side_effects: list,
     ) -> None:
-        """The owner approved specific bytes; different bytes must not run."""
+        """Uses the configured workflow."""
         action, _approval = await _request(session, settings)
 
         tampered = json.loads(action.payload_json)

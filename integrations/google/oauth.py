@@ -4,8 +4,8 @@ One consent grant covers Gmail, Calendar, Contacts and Drive: the assistant asks
 for every scope it will ever need at setup time, because a mid-conversation
 re-consent is impossible on a headless machine.
 
-The refresh token is written to the Fernet-encrypted store, never to the
-database and never to a log. Access tokens live in memory only, are refreshed
+Uses the configured workflow.
+Uses the configured workflow.
 about a minute before expiry, and a concurrent burst of API calls triggers one
 refresh rather than several.
 """

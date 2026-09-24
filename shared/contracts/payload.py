@@ -23,7 +23,7 @@ def _normalise(value: Any) -> Any:
     if value is None or isinstance(value, bool | int | str):
         return value
     if isinstance(value, float):
-        # Round-trip through repr so 1.0 and 1 never collide accidentally while
+        # Uses the configured workflow.
         # remaining stable across platforms.
         return repr(value)
     if isinstance(value, Decimal):

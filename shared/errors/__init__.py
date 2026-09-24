@@ -2,7 +2,7 @@
 
 Every error carries a stable machine-readable ``code`` so clients (including the
 Reachy tool adapters) can branch without string matching, and an HTTP status for
-the API layer. Error messages are considered model-visible: never interpolate a
+Uses the configured workflow.
 credential, token or raw provider response into one.
 """
 

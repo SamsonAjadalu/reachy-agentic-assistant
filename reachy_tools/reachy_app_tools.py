@@ -306,7 +306,7 @@ class PersonalAssistantStatus(PersonalAssistantTool):
 class CreateReminder(PersonalAssistantTool):
     name = "create_reminder"
     description = (
-        "Create a reminder on the main PC using either a relative delay or an exact ISO-8601 time."
+        "Create a reminder on the workstation using either a relative delay or an exact ISO-8601 time."
     )
     parameters_schema = {
         "type": "object",
@@ -584,7 +584,7 @@ class CreateGmailDraft(PersonalAssistantTool):
     name = "create_gmail_draft"
     description = (
         "Create a brand-new Gmail email draft only. Use reply_to_email for replying to "
-        "an existing message. This tool never sends email."
+        "an existing message. Email sending follows the approval flow."
     )
     parameters_schema = {
         "type": "object",
@@ -622,7 +622,7 @@ class ReplyToEmail(PersonalAssistantTool):
     name = "reply_to_email"
     description = (
         "Create a reply draft for an existing Gmail message in its original thread. "
-        "The server derives the recipient and thread from message_id; this tool never sends email."
+        "The server derives the recipient and thread from message_id; email sending follows the approval flow."
     )
     parameters_schema = {
         "type": "object",
@@ -657,7 +657,7 @@ class ReplyToEmail(PersonalAssistantTool):
 class SendExistingDraft(PersonalAssistantTool):
     name = "send_existing_draft"
     description = (
-        "Request owner approval to send an existing Gmail draft revision. Never sends directly."
+        "Request owner approval to send an existing Gmail draft revision through the approval flow."
     )
     parameters_schema = {
         "type": "object",
@@ -984,7 +984,7 @@ class ReadNotionPage(PersonalAssistantTool):
 
 class SearchDocuments(PersonalAssistantTool):
     name = "search_documents"
-    description = "Search the main PC's allowlisted document index."
+    description = "Search the workstation's allowlisted document index."
     parameters_schema = {
         "type": "object",
         "properties": {"query": {"type": "string", "minLength": 1, "maxLength": 200}},
@@ -1066,7 +1066,7 @@ class GetPersonalWeather(PersonalAssistantTool):
 
 class SearchWardrobe(PersonalAssistantTool):
     name = "search_wardrobe"
-    description = "Search the wardrobe inventory on the main PC."
+    description = "Search the wardrobe inventory on the workstation."
     parameters_schema = {
         "type": "object",
         "properties": {
@@ -1106,7 +1106,7 @@ class SearchWardrobe(PersonalAssistantTool):
 
 class RecommendOutfit(PersonalAssistantTool):
     name = "recommend_outfit"
-    description = "Recommend an outfit using wardrobe data and weather on the main PC."
+    description = "Recommend an outfit using wardrobe data and weather on the workstation."
     parameters_schema = {
         "type": "object",
         "properties": {"occasion": {"type": "string", "minLength": 1, "maxLength": 60}},
@@ -1137,7 +1137,7 @@ class RecommendOutfit(PersonalAssistantTool):
 
 class GetWorkstationStatus(PersonalAssistantTool):
     name = "get_workstation_status"
-    description = "Read bounded workstation health metrics from the main PC."
+    description = "Read bounded workstation health metrics from the workstation."
     parameters_schema = PersonalAssistantPing.parameters_schema
 
     async def run(
@@ -1150,7 +1150,7 @@ class GetWorkstationStatus(PersonalAssistantTool):
 
 class ListPendingNotifications(PersonalAssistantTool):
     name = "list_pending_notifications"
-    description = "List pending proactive notifications queued for Reachy by the main PC."
+    description = "List pending proactive notifications queued for Reachy by the workstation."
     parameters_schema = PersonalAssistantPing.parameters_schema
 
     async def run(

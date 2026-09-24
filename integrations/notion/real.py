@@ -159,7 +159,7 @@ class NotionClient:
                 details={"integration": "notion"},
             )
         if response.status_code in {httpx.codes.NOT_FOUND, httpx.codes.FORBIDDEN}:
-            # Notion returns 404 for a page that exists but was never shared, so
+            # Uses the configured workflow.
             # the two cases are genuinely indistinguishable from here.
             raise PermissionDeniedError(
                 "Notion returned no access to that page. Share it with the integration "

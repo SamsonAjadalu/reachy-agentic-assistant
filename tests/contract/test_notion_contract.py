@@ -308,7 +308,7 @@ class TestFailures:
 
     @respx.mock
     async def test_a_404_is_explained_as_a_sharing_problem(self, client: NotionClient) -> None:
-        """Notion returns 404 for a page that exists but was never shared."""
+        """Uses the configured workflow."""
         respx.get(f"{API_ROOT}/pages/{PAGE_ID}").mock(return_value=httpx.Response(404, json={}))
 
         with pytest.raises(PermissionDeniedError, match="Share it with the integration"):

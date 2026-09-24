@@ -1,7 +1,7 @@
 """Notification channel interface.
 
 Every channel implements the same protocol so the dispatcher, the approval flow
-and the briefing generator never import a specific provider. The mock channel is
+Uses the configured workflow.
 a full implementation rather than a stub: the entire notification and approval
 path is exercised in tests without a network.
 """

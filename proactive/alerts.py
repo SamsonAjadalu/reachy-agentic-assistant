@@ -262,7 +262,7 @@ async def evaluate(
         try:
             alerts = await rule_fn(context)
         except Exception as exc:
-            # One broken rule must not stop the others; a monitoring system that
+            # Uses the configured workflow.
             # stops monitoring on the first error is worse than none.
             logger.warning(
                 "An alert rule failed",
@@ -273,7 +273,7 @@ async def evaluate(
 
         for alert in alerts:
             fingerprint = payload_hash(alert.facts) if alert.facts else None
-            # dry_run must not advance the cooldown ledger, or a "what would fire?"
+            # Uses the configured workflow.
             # check would silently suppress the real notification.
             allowed = await should_notify(
                 session,

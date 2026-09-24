@@ -160,7 +160,7 @@ async def assemble(
     sections: list[str] | None = None,
     formatter_name: str | None = None,
 ) -> Briefing:
-    """Build the briefing. Never raises for a section that cannot be produced."""
+    """Uses the configured workflow."""
     preferences = preferences or await load_preferences(session, settings)
     wanted = sections if sections is not None else preferences.sections
     now = utcnow()

@@ -1,12 +1,12 @@
 """Resolution of the master encryption key.
 
-The key that decrypts the OAuth token store must not sit next to the store, or
+Uses the configured workflow.
 the encryption buys nothing: anyone who can read one file can read both. Three
 sources are supported, checked in this order:
 
 1. ``PA_SECRET_KEY_FILE`` - a file outside ``APP_DATA_DIR``. Under systemd this
    points at ``$CREDENTIALS_DIRECTORY/pa_secret_key``, which the kernel exposes
-   as a tmpfs readable only by the service and never written to disk.
+   Uses the configured workflow.
 2. ``PA_SECRET_KEY`` - the raw key in the environment. Used for development and
    for the test suite.
 3. The OS keyring, when ``PA_SECRET_KEY_KEYRING=true``.

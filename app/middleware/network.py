@@ -1,6 +1,6 @@
 """Network-level access control.
 
-Runs before authentication so a host outside the allowed CIDRs never reaches the
+Uses the configured workflow.
 token comparison at all. This is defence in depth, not the primary control: a
 LAN peer that steals the bearer token still gets in, which is why the token
 matters and why the deployment guidance is Tailscale rather than a wide LAN bind.
